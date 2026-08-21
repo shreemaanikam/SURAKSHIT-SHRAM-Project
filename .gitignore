@@ -39,3 +39,28 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python Virtual Environment
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+
+# SQLite database
+*.db
+*.sqlite
+*.sqlite3
+
+# Document Storage
+storage/documents/*
+!storage/documents/.gitkeep
+backend/storage/documents/*
+!backend/storage/documents/.gitkeep
+
+# IDEs & OS
+.idea/
+
+# Pytest
+.pytest_cache/
+.coverage
