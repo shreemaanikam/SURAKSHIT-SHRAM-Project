@@ -16,6 +16,7 @@ from app.api.inspections import router as inspections_router
 from app.api.risk import router as risk_router
 from app.api.government_data import router as gov_router
 from app.api.health import router as health_router
+from app.api.ai import router as ai_router
 
 
 @asynccontextmanager
@@ -44,6 +45,7 @@ Backend & Data Integration Layer managing:
 * **Government Data Connectors** (EPFO, ESIC, LIN, State Mock Interfaces)
 * **Data Normalization & Resilient Idempotent Sync Pipeline**
 * **Privacy Controls & Audit Logging**
+* **AI Gateway Interfaces** (OCR, State-Adaptive Rule Engine, SHAP Explainable Risk)
 """
 )
 
@@ -76,6 +78,7 @@ app.include_router(inspections_router, prefix=settings.API_V1_STR)
 app.include_router(risk_router, prefix=settings.API_V1_STR)
 app.include_router(gov_router, prefix=settings.API_V1_STR)
 app.include_router(health_router, prefix=settings.API_V1_STR)
+app.include_router(ai_router, prefix=settings.API_V1_STR)
 
 
 @app.get("/", include_in_schema=False)
