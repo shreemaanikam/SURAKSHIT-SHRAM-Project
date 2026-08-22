@@ -36,6 +36,13 @@ class CompanyGovernmentRecord(BaseModel):
     employee_count: int
     last_return_filed: Optional[str]
     raw_source: str
+    cin: Optional[str] = None
+    roc_code: Optional[str] = None
+    authorized_capital_inr: Optional[float] = None
+    paid_up_capital_inr: Optional[float] = None
+    udyam_registration_number: Optional[str] = None
+    msme_category: Optional[str] = None
+    nic_code: Optional[str] = None
 
 
 class ComplianceGovernmentRecord(BaseModel):

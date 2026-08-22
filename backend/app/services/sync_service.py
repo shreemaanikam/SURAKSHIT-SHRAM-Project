@@ -7,6 +7,9 @@ from app.connectors.epfo_mock import MockEPFOConnector
 from app.connectors.esic_mock import MockESICConnector
 from app.connectors.lin_mock import MockLINConnector
 from app.connectors.state_mock import MockStateConnector
+from app.connectors.roc_mock import MockROCConnector
+from app.connectors.udyam_mock import MockUdyamConnector
+
 from app.models.company import Company
 from app.models.compliance import ComplianceRecord
 from app.models.data_source import DataSource
@@ -23,7 +26,9 @@ CONNECTORS = {
     "EPFO": MockEPFOConnector(),
     "ESIC": MockESICConnector(),
     "LIN": MockLINConnector(),
-    "STATE_LABOR": MockStateConnector()
+    "STATE_LABOR": MockStateConnector(),
+    "ROC": MockROCConnector(),
+    "UDYAM_MSME": MockUdyamConnector()
 }
 
 
@@ -32,17 +37,24 @@ class DataNormalizer:
 
     @staticmethod
     def normalize_company_record(source: str, reg_number: str, raw: Dict[str, Any]) -> CompanyGovernmentRecord:
-        legal_name = raw.get("establishment_name") or raw.get("unit_name") or f"Company {reg_number}"
+        legal_name = raw.get("company_name") or raw.get("enterprise_name") or raw.get("establishment_name") or raw.get("unit_name") or f"Company {reg_number}"
         emp_count = raw.get("active_members_count") or raw.get("insured_persons_count") or raw.get("verified_employee_count") or 0
-        status = raw.get("coverage_status") or raw.get("status") or "ACTIVE"
+        status = raw.get("company_status") or raw.get("coverage_status") or raw.get("status") or "ACTIVE"
         
         return CompanyGovernmentRecord(
             registration_number=reg_number,
             legal_name=legal_name,
             status=status,
             employee_count=emp_count,
-            last_return_filed=raw.get("registration_date"),
-            raw_source=source
+            last_return_filed=raw.get("registration_date") or raw.get("date_of_incorporation") or raw.get("date_of_udyam_registration"),
+            raw_source=source,
+            cin=raw.get("cin"),
+            roc_code=raw.get("roc_code"),
+            authorized_capital_inr=raw.get("authorized_capital_inr"),
+            paid_up_capital_inr=raw.get("paid_up_capital_inr"),
+            udyam_registration_number=raw.get("udyam_registration_number"),
+            msme_category=raw.get("msme_category"),
+            nic_code=raw.get("nic_code")
         )
 
     @staticmethod
@@ -55,7 +67,7 @@ class DataNormalizer:
             amount = float(rec.get("amount_paid") or 0.0)
             due_date = rec.get("due_date") or "2026-04-15"
             payment_date = rec.get("payment_date") or rec.get("filing_date")
-            receipt = rec.get("trrn_number") or rec.get("challan_number") or rec.get("return_reference")
+            receipt = rec.get("trrn_number") or rec.get("challan_number") or rec.get("return_reference") or rec.get("srn_number") or rec.get("udyam_acknowledgement")
 
             normalized.append(
                 ComplianceGovernmentRecord(

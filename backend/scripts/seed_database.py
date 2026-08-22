@@ -125,7 +125,23 @@ def seed_database():
                 source="LIN_MOCK",
                 verified=True
             )
-            db.add_all([epfo_rec, esic_rec, lin_rec])
+            roc_rec = ComplianceRecord(
+                company_id=comp.id,
+                compliance_type="ROC_ANNUAL_RETURN",
+                status="COMPLIANT",
+                reporting_period="2026-Q1",
+                source="ROC_MOCK",
+                verified=True
+            )
+            udyam_rec = ComplianceRecord(
+                company_id=comp.id,
+                compliance_type="MSME_SAMADHAAN_FILING",
+                status="COMPLIANT",
+                reporting_period="2026-Q1",
+                source="UDYAM_MSME_MOCK",
+                verified=True
+            )
+            db.add_all([epfo_rec, esic_rec, lin_rec, roc_rec, udyam_rec])
 
             # Synthetic Document Metadata
             doc = Document(
@@ -191,11 +207,13 @@ def seed_database():
             DataSource(source_name="ESIC", source_type="MOCK_CONNECTOR", status="ACTIVE", sync_status="SUCCESS", last_sync=datetime.now(timezone.utc)),
             DataSource(source_name="LIN", source_type="MOCK_CONNECTOR", status="ACTIVE", sync_status="SUCCESS", last_sync=datetime.now(timezone.utc)),
             DataSource(source_name="STATE_LABOR", source_type="MOCK_CONNECTOR", status="ACTIVE", sync_status="SUCCESS", last_sync=datetime.now(timezone.utc)),
+            DataSource(source_name="ROC", source_type="MOCK_CONNECTOR", status="ACTIVE", sync_status="SUCCESS", last_sync=datetime.now(timezone.utc)),
+            DataSource(source_name="UDYAM_MSME", source_type="MOCK_CONNECTOR", status="ACTIVE", sync_status="SUCCESS", last_sync=datetime.now(timezone.utc)),
         ]
         db.add_all(sources)
 
         db.commit()
-        print("✅ Database successfully seeded with 20 synthetic companies and sample compliance records!")
+        print("✅ Database successfully seeded with 20 synthetic companies, ROC, and UDYAM datasets!")
 
     except Exception as e:
         db.rollback()
