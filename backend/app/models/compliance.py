@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.database.base import Base
 
@@ -22,6 +22,11 @@ class ComplianceRecord(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
+    )
+
+    # Database-level unique constraint preventing duplicate period entries per company
+    __table_args__ = (
+        UniqueConstraint("company_id", "compliance_type", "reporting_period", name="uq_company_compliance_period"),
     )
 
     # Relationships

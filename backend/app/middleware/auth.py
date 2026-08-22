@@ -33,6 +33,19 @@ def get_current_user(
     return user
 
 
+def verify_company_access(company_id: int, current_user: User) -> None:
+    """
+    Enforce multi-tenant data isolation.
+    ADMIN, INSPECTOR, and GOVERNMENT roles have multi-company access privileges.
+    COMPANY role users are strictly restricted to their assigned company_id.
+    """
+    if current_user.role == UserRole.COMPANY:
+        if current_user.company_id is None or current_user.company_id != company_id:
+            raise PermissionDeniedError(
+                f"Tenant Isolation Violation: Company user (ID: {current_user.id}) is not authorized to access Company ID {company_id}."
+            )
+
+
 def require_roles(allowed_roles: List[UserRole]):
     """Factory dependency for role-based authorization checking."""
     def role_checker(current_user: User = Depends(get_current_user)) -> User:

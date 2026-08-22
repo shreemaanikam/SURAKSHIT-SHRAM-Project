@@ -1,6 +1,6 @@
 import os
 from typing import List, Union
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     
-    SECRET_KEY: str = "surakshit-shram-super-secret-jwt-key-2026-production-ready-change-me"
+    SECRET_KEY: str = "surakshit-shram-default-dev-secret-key-change-in-production-2026"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 1 day token lifetime
     
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     ALLOWED_EXTENSIONS: set = {"pdf", "png", "jpg", "jpeg", "doc", "docx", "csv"}
     
     # Security & CORS
-    BACKEND_CORS_ORIGINS: List[str] = ["*"]
+    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8000", "http://127.0.0.1:8000"]
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -45,6 +45,14 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore"
     )
+
+    @model_validator(mode="after")
+    def validate_production_secrets(self) -> "Settings":
+        env = self.ENVIRONMENT.lower()
+        if env not in ("development", "test", "testing"):
+            if "dev" in self.SECRET_KEY.lower() or "default" in self.SECRET_KEY.lower() or len(self.SECRET_KEY) < 32:
+                raise ValueError("CRITICAL SECURITY ERROR: In production/staging, SECRET_KEY must be explicitly set to a strong random key (at least 32 characters).")
+        return self
 
     @property
     def sync_database_url(self) -> str:

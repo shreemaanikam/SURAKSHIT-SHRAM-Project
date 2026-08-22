@@ -8,19 +8,20 @@ services:
     container_name: surakshit_backend
     restart: always
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
-      - PROJECT_NAME=SURAKSHIT SHRAM Backend
-      - ENVIRONMENT=production
+      - PROJECT_NAME=${PROJECT_NAME:-SURAKSHIT SHRAM Backend}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - SECRET_KEY=${SECRET_KEY:-surakshit-shram-development-key-change-in-production-12345}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=5432
-      - POSTGRES_USER=surakshit_user
-      - POSTGRES_PASSWORD=surakshit_password
-      - POSTGRES_DB=surakshit_shram_db
-      - DATABASE_URL=postgresql://surakshit_user:surakshit_password@db:5432/surakshit_shram_db
+      - POSTGRES_USER=${POSTGRES_USER:-surakshit_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-surakshit_password_change_me}
+      - POSTGRES_DB=${POSTGRES_DB:-surakshit_shram_db}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-surakshit_user}:${POSTGRES_PASSWORD:-surakshit_password_change_me}@db:5432/${POSTGRES_DB:-surakshit_shram_db}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - SECRET_KEY=surakshit-shram-super-secret-jwt-key-2026-production-ready
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-surakshit_redis_pass}
     depends_on:
       db:
         condition: service_healthy
@@ -34,15 +35,15 @@ services:
     container_name: surakshit_postgres
     restart: always
     environment:
-      - POSTGRES_USER=surakshit_user
-      - POSTGRES_PASSWORD=surakshit_password
-      - POSTGRES_DB=surakshit_shram_db
+      - POSTGRES_USER=${POSTGRES_USER:-surakshit_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-surakshit_password_change_me}
+      - POSTGRES_DB=${POSTGRES_DB:-surakshit_shram_db}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U surakshit_user -d surakshit_shram_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-surakshit_user} -d ${POSTGRES_DB:-surakshit_shram_db}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -51,10 +52,11 @@ services:
     image: redis:7-alpine
     container_name: surakshit_redis
     restart: always
+    command: redis-server --requirepass "${REDIS_PASSWORD:-surakshit_redis_pass}"
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-surakshit_redis_pass}", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5

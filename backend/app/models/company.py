@@ -1,5 +1,5 @@
 from datetime import datetime, date, timezone
-from sqlalchemy import Column, Integer, String, Date, DateTime
+from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from app.database.base import Base
 
@@ -17,6 +17,9 @@ class Company(Base):
     company_size = Column(String(50), nullable=False)  # MICRO, SMALL, MEDIUM, LARGE
     employee_count = Column(Integer, nullable=False, default=0)
     establishment_date = Column(Date, nullable=True)
+
+    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
+    deleted_at = Column(DateTime, nullable=True)
 
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at = Column(

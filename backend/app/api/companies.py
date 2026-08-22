@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.middleware.auth import get_current_user, require_company_user, require_admin
+from app.middleware.auth import get_current_user, require_company_user, require_admin, verify_company_access
 from app.models.user import User
 from app.schemas.company import CompanyCreate, CompanyUpdate, CompanyResponse, CompanyListResponse
 from app.services.company_service import CompanyService
@@ -25,7 +25,7 @@ def create_company(
     current_user: User = Depends(require_company_user)
 ):
     service = CompanyService(db)
-    company = service.create_company(payload)
+    company = service.create_company(payload, creating_user=current_user)
     
     AuditService.log_action(
         db=db,
@@ -58,7 +58,8 @@ def list_companies(
         size=size,
         industry=industry,
         state=state,
-        search=search
+        search=search,
+        current_user=current_user
     )
     return CompanyListResponse(
         items=items,
@@ -78,6 +79,7 @@ def get_company(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = CompanyService(db)
     return service.get_company_by_id(company_id)
 
@@ -94,6 +96,7 @@ def update_company(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_company_user)
 ):
+    verify_company_access(company_id, current_user)
     service = CompanyService(db)
     updated = service.update_company(company_id, payload)
     
@@ -110,7 +113,7 @@ def update_company(
 @router.delete(
     "/{company_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete company profile",
+    summary="Soft-delete company profile",
     description="Requires ADMIN user role."
 )
 def delete_company(

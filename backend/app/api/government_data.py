@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.middleware.auth import get_current_user, require_admin
+from app.middleware.auth import get_current_user, require_admin, verify_company_access
 from app.models.user import User
 from app.schemas.sync import (
     SyncTriggerResponse, SyncStatusResponse, GovernmentDataResponse, DataSourceResponse
@@ -103,5 +103,6 @@ def get_company_government_data(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = SynchronizationService(db)
     return service.get_government_data(company_id=company_id, source_name=source)

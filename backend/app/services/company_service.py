@@ -1,20 +1,23 @@
+from datetime import datetime, timezone
 from typing import List, Tuple, Optional
 from sqlalchemy.orm import Session
 from app.models.company import Company
+from app.models.user import User, UserRole
 from app.schemas.company import CompanyCreate, CompanyUpdate
 from app.core.exceptions import NotFoundError, DuplicateEntityError
 from app.services.cache_service import cache_service
 
 
 class CompanyService:
-    """Service handling company business logic, filtering, pagination, and caching."""
+    """Service handling company business logic, filtering, pagination, caching, and soft-delete."""
 
     def __init__(self, db: Session):
         self.db = db
 
-    def create_company(self, data: CompanyCreate) -> Company:
+    def create_company(self, data: CompanyCreate, creating_user: Optional[User] = None) -> Company:
         existing = self.db.query(Company).filter(
-            Company.registration_number == data.registration_number
+            Company.registration_number == data.registration_number,
+            Company.is_deleted == False
         ).first()
         if existing:
             raise DuplicateEntityError(
@@ -25,16 +28,25 @@ class CompanyService:
         self.db.add(company)
         self.db.commit()
         self.db.refresh(company)
+
+        # If created by a company user, automatically link their account to this company_id
+        if creating_user and creating_user.role == UserRole.COMPANY and creating_user.company_id is None:
+            creating_user.company_id = company.id
+            self.db.commit()
+
         return company
 
     def get_company_by_id(self, company_id: int) -> Company:
         cache_key = f"company:detail:{company_id}"
         cached = cache_service.get_json(cache_key)
-        if cached:
-            # Reconstruct from cache if available or directly return cached dict
+        if cached and not cached.get("is_deleted"):
+            # Reconstruct or return if un-deleted
             pass
 
-        company = self.db.query(Company).filter(Company.id == company_id).first()
+        company = self.db.query(Company).filter(
+            Company.id == company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", company_id)
 
@@ -62,9 +74,17 @@ class CompanyService:
         size: int = 10,
         industry: Optional[str] = None,
         state: Optional[str] = None,
-        search: Optional[str] = None
+        search: Optional[str] = None,
+        current_user: Optional[User] = None
     ) -> Tuple[List[Company], int]:
-        query = self.db.query(Company)
+        query = self.db.query(Company).filter(Company.is_deleted == False)
+
+        # Tenant isolation for COMPANY users
+        if current_user and current_user.role == UserRole.COMPANY:
+            if current_user.company_id:
+                query = query.filter(Company.id == current_user.company_id)
+            else:
+                return [], 0
 
         if industry:
             query = query.filter(Company.industry.ilike(f"%{industry}%"))
@@ -93,8 +113,10 @@ class CompanyService:
         return company
 
     def delete_company(self, company_id: int) -> bool:
+        """Soft-delete company to preserve statutory legal audit records."""
         company = self.get_company_by_id(company_id)
-        self.db.delete(company)
+        company.is_deleted = True
+        company.deleted_at = datetime.now(timezone.utc)
         self.db.commit()
 
         # Invalidate cache

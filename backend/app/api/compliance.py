@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.middleware.auth import get_current_user, require_company_user
+from app.middleware.auth import get_current_user, require_company_user, verify_company_access
 from app.models.user import User
 from app.schemas.compliance import ComplianceCreate, ComplianceUpdate, ComplianceResponse
 from app.services.compliance_service import ComplianceService
@@ -24,6 +24,7 @@ def create_compliance(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_company_user)
 ):
+    verify_company_access(company_id, current_user)
     service = ComplianceService(db)
     record = service.create_compliance_record(company_id, payload)
     
@@ -47,6 +48,7 @@ def list_compliance(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = ComplianceService(db)
     return service.list_company_compliance(company_id)
 
@@ -63,7 +65,10 @@ def update_compliance(
     current_user: User = Depends(require_company_user)
 ):
     service = ComplianceService(db)
-    record = service.update_compliance_record(id, payload)
+    record = service.get_compliance_record_by_id(id)
+    verify_company_access(record.company_id, current_user)
+    
+    updated_record = service.update_compliance_record(id, payload)
     
     AuditService.log_action(
         db=db,
@@ -72,4 +77,4 @@ def update_compliance(
         resource_id=str(id),
         user_id=current_user.id
     )
-    return record
+    return updated_record

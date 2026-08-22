@@ -8,7 +8,7 @@ class MockLINConnector(GovernmentDataConnector):
     """Mock connector for Labor Identification Number (Central Shram Suvidha Portal)."""
 
     def __init__(self):
-        super().__init__(source_name="LIN", api_base_url="https://shramsuvidha.gov.in/mock-api/v1")
+        super().__init__(source_name="LIN", api_base_url="https://mock.gov.in/lin/v1")
 
     def authenticate(self) -> bool:
         self.authenticated = True

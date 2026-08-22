@@ -49,7 +49,7 @@ class LocalStorageProvider(StorageProvider):
 
 
 class DocumentService:
-    """Service handling compliance document metadata, validation, SHA-256 hashing, and storage."""
+    """Service handling compliance document metadata, stream validation, SHA-256 hashing, and storage."""
 
     def __init__(self, db: Session, storage: Optional[StorageProvider] = None):
         self.db = db
@@ -62,8 +62,11 @@ class DocumentService:
         file: UploadFile,
         uploaded_by_user_id: Optional[int] = None
     ) -> Document:
-        # Validate company exists
-        company = self.db.query(Company).filter(Company.id == company_id).first()
+        # Validate company exists and is active
+        company = self.db.query(Company).filter(
+            Company.id == company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", company_id)
 
@@ -77,14 +80,25 @@ class DocumentService:
                 code="INVALID_FILE_TYPE"
             )
 
-        # Read contents and validate file size
-        contents = await file.read()
-        if len(contents) > settings.MAX_UPLOAD_SIZE_BYTES:
-            raise BaseAppException(
-                message=f"File size exceeds maximum limit of {settings.MAX_UPLOAD_SIZE_BYTES / (1024*1024):.1f}MB.",
-                status_code=400,
-                code="FILE_TOO_LARGE"
-            )
+        # Read file in 64KB chunks to prevent DoS memory exhaustion
+        chunk_size = 64 * 1024
+        total_size = 0
+        chunks = []
+        
+        while True:
+            chunk = await file.read(chunk_size)
+            if not chunk:
+                break
+            total_size += len(chunk)
+            if total_size > settings.MAX_UPLOAD_SIZE_BYTES:
+                raise BaseAppException(
+                    message=f"File size exceeds maximum allowed limit of {settings.MAX_UPLOAD_SIZE_BYTES / (1024*1024):.1f}MB.",
+                    status_code=400,
+                    code="FILE_TOO_LARGE"
+                )
+            chunks.append(chunk)
+
+        contents = b"".join(chunks)
 
         # Store file & compute SHA-256 hash
         storage_ref, doc_hash = self.storage.save_file(contents, filename)
@@ -110,7 +124,10 @@ class DocumentService:
         return doc
 
     def get_company_documents(self, company_id: int) -> List[Document]:
-        company = self.db.query(Company).filter(Company.id == company_id).first()
+        company = self.db.query(Company).filter(
+            Company.id == company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", company_id)
 

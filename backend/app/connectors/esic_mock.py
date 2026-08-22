@@ -8,7 +8,7 @@ class MockESICConnector(GovernmentDataConnector):
     """Mock connector for Employees' State Insurance Corporation (ESIC)."""
 
     def __init__(self):
-        super().__init__(source_name="ESIC", api_base_url="https://esic.gov.in/mock-api/v1")
+        super().__init__(source_name="ESIC", api_base_url="https://mock.gov.in/esic/v1")
 
     def authenticate(self) -> bool:
         self.authenticated = True

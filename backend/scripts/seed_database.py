@@ -33,6 +33,36 @@ def seed_database():
             print("⚡ Database already contains seed data. Skipping seeding.")
             return
 
+        print("🏢 Creating 20 synthetic companies...")
+        industries = ["Textiles & Garments", "Automotive Manufacturing", "Pharmaceuticals", "IT Services", "Food Processing", "Construction"]
+        states_districts = [
+            ("Delhi", "North Delhi"), ("Maharashtra", "Pune"), ("Karnataka", "Bengaluru Urban"),
+            ("Tamil Nadu", "Chennai"), ("Gujarat", "Ahmedabad"), ("Haryana", "Gurugram")
+        ]
+
+        companies = []
+        for i in range(1, 21):
+            st, dist = states_districts[i % len(states_districts)]
+            ind = industries[i % len(industries)]
+            c = Company(
+                legal_name=f"Synthetic Enterprise {i:02d} Ltd",
+                registration_number=f"REG-SYNTH-2026-{1000 + i}",
+                industry=ind,
+                state=st,
+                district=dist,
+                address=f"Plot {10 + i}, Industrial Area Phase-{i%3 + 1}, {dist}, {st}",
+                company_size="MEDIUM" if i % 2 == 0 else "LARGE" if i % 5 == 0 else "SMALL",
+                employee_count=random.randint(25, 450),
+                establishment_date=date(2015 + (i % 8), (i % 12) + 1, 15)
+            )
+            db.add(c)
+            companies.append(c)
+        db.commit()
+
+        # Refresh to get IDs
+        for c in companies:
+            db.refresh(c)
+
         print("👤 Creating synthetic default users across roles...")
         admin_user = User(
             email="admin@surakshit.gov.in",
@@ -60,6 +90,7 @@ def seed_database():
             username="bharat_textiles",
             password_hash=get_password_hash("CompanySecret2026!"),
             role=UserRole.COMPANY,
+            company_id=companies[0].id,
             is_active=True
         )
         db.add_all([admin_user, inspector_user, gov_user, company_user])
@@ -67,36 +98,8 @@ def seed_database():
         db.refresh(inspector_user)
         db.refresh(company_user)
 
-        print("🏢 Creating 20 synthetic companies...")
-        industries = ["Textiles & Garments", "Automotive Manufacturing", "Pharmaceuticals", "IT Services", "Food Processing", "Construction"]
-        states_districts = [
-            ("Delhi", "North Delhi"), ("Maharashtra", "Pune"), ("Karnataka", "Bengaluru Urban"),
-            ("Tamil Nadu", "Chennai"), ("Gujarat", "Ahmedabad"), ("Haryana", "Gurugram")
-        ]
-
-        companies = []
-        for i in range(1, 21):
-            st, dist = states_districts[i % len(states_districts)]
-            ind = industries[i % len(industries)]
-            c = Company(
-                legal_name=f"Synthetic Enterprise {i:02d} Ltd",
-                registration_number=f"REG-SYNTH-2026-{1000 + i}",
-                industry=ind,
-                state=st,
-                district=dist,
-                address=f"Plot {10 + i}, Industrial Area Phase-{i%3 + 1}, {dist}, {st}",
-                company_size="MEDIUM" if i % 2 == 0 else "LARGE" if i % 5 == 0 else "SMALL",
-                employee_count=random.randint(25, 450),
-                establishment_date=date(2015 + (i % 8), (i % 12) + 1, 15)
-            )
-            db.add(c)
-            companies.append(c)
-        db.commit()
-
         print("📜 Seeding compliance records, inspections, violations, and risk scores...")
         for comp in companies:
-            db.refresh(comp)
-
             # Compliance Records
             epfo_rec = ComplianceRecord(
                 company_id=comp.id,

@@ -3,6 +3,7 @@ import re
 import sys
 from typing import Any, Dict
 from app.core.config import settings
+from app.middleware.request_id import request_id_ctx
 
 # Sensitive field patterns to redact from logs
 SENSITIVE_PATTERNS = [
@@ -15,10 +16,15 @@ SENSITIVE_PATTERNS = [
 ]
 
 
-class SensitiveDataSanitizerFilter(logging.Filter):
-    """Filter that sanitizes sensitive data from log records."""
+class RequestIdAndSanitizerFilter(logging.Filter):
+    """Filter that auto-injects request_id from contextvar and sanitizes sensitive data."""
 
     def filter(self, record: logging.LogRecord) -> bool:
+        # Inject request_id attribute if missing
+        if not hasattr(record, "request_id") or not record.request_id:
+            record.request_id = request_id_ctx.get()
+
+        # Sanitize log message
         if isinstance(record.msg, str):
             record.msg = self.sanitize(record.msg)
         if record.args:
@@ -37,8 +43,12 @@ class SensitiveDataSanitizerFilter(logging.Filter):
         return text
 
 
+# Backwards compatibility alias
+SensitiveDataSanitizerFilter = RequestIdAndSanitizerFilter
+
+
 def setup_logging() -> logging.Logger:
-    """Configure structured logger with sensitive data sanitization."""
+    """Configure structured logger with request ID injection and sensitive data sanitization."""
     logger = logging.getLogger("surakshit_shram")
     logger.setLevel(getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO))
     
@@ -49,7 +59,7 @@ def setup_logging() -> logging.Logger:
             datefmt='%Y-%m-%d %H:%M:%S'
         )
         handler.setFormatter(formatter)
-        handler.addFilter(SensitiveDataSanitizerFilter())
+        handler.addFilter(RequestIdAndSanitizerFilter())
         logger.addHandler(handler)
         logger.propagate = False
         

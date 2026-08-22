@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.middleware.auth import get_current_user, require_inspector
+from app.middleware.auth import get_current_user, require_inspector, verify_company_access
 from app.models.user import User
 from app.schemas.inspection import (
     InspectionCreate, InspectionUpdate, InspectionResponse,
@@ -52,7 +52,9 @@ def get_inspection(
     current_user: User = Depends(get_current_user)
 ):
     service = InspectionService(db)
-    return service.get_inspection_by_id(id)
+    inspection = service.get_inspection_by_id(id)
+    verify_company_access(inspection.company_id, current_user)
+    return inspection
 
 
 @router.get(
@@ -65,6 +67,7 @@ def list_company_inspections(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = InspectionService(db)
     return service.list_company_inspections(company_id)
 
@@ -130,6 +133,7 @@ def list_violations(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = InspectionService(db)
     return service.list_company_violations(company_id)
 

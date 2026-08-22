@@ -44,7 +44,7 @@ class InMemoryCacheFallback:
 
 
 class CacheService:
-    """Redis Cache Service with automatic in-memory fallback."""
+    """Redis Cache Service with non-blocking SCAN iteration and automatic in-memory fallback."""
 
     def __init__(self):
         self.client = None
@@ -102,11 +102,11 @@ class CacheService:
             return False
 
     def invalidate_prefix(self, prefix: str) -> int:
-        """Remove all keys starting with prefix (e.g., 'company:1:*')."""
+        """Remove all keys matching prefix using non-blocking SCAN iteration."""
         count = 0
         try:
             if self.is_redis:
-                keys = self.client.keys(f"{prefix}*")
+                keys = list(self.client.scan_iter(match=f"{prefix}*"))
                 if keys:
                     count = self.client.delete(*keys)
             else:

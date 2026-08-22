@@ -19,7 +19,10 @@ class InspectionService:
         self.db = db
 
     def create_inspection(self, data: InspectionCreate, inspector_id: Optional[int] = None) -> Inspection:
-        company = self.db.query(Company).filter(Company.id == data.company_id).first()
+        company = self.db.query(Company).filter(
+            Company.id == data.company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", data.company_id)
 
@@ -43,7 +46,10 @@ class InspectionService:
         return inspection
 
     def list_company_inspections(self, company_id: int) -> List[Inspection]:
-        company = self.db.query(Company).filter(Company.id == company_id).first()
+        company = self.db.query(Company).filter(
+            Company.id == company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", company_id)
 
@@ -63,7 +69,10 @@ class InspectionService:
         return inspection
 
     def create_violation(self, company_id: int, data: ViolationCreate) -> Violation:
-        company = self.db.query(Company).filter(Company.id == company_id).first()
+        company = self.db.query(Company).filter(
+            Company.id == company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", company_id)
 
@@ -85,6 +94,14 @@ class InspectionService:
         violation = self.db.query(Violation).filter(Violation.id == data.violation_id).first()
         if not violation:
             raise NotFoundError("Violation", data.violation_id)
+
+        # Cross-company violation check (MEDIUM-8 fix)
+        if violation.company_id != company_id:
+            raise BaseAppException(
+                message=f"Violation ID {data.violation_id} does not belong to Company ID {company_id}.",
+                status_code=400,
+                code="VIOLATION_COMPANY_MISMATCH"
+            )
 
         notice = ImprovementNotice(
             company_id=company_id,

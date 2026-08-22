@@ -8,7 +8,7 @@ class MockStateConnector(GovernmentDataConnector):
     """Mock connector for State Labor Department & Treasury Systems (Shops & Establishments, Local Labor Laws)."""
 
     def __init__(self):
-        super().__init__(source_name="STATE_LABOR", api_base_url="https://labour.state.gov.in/mock-api/v1")
+        super().__init__(source_name="STATE_LABOR", api_base_url="https://mock.gov.in/state/v1")
 
     def authenticate(self) -> bool:
         self.authenticated = True

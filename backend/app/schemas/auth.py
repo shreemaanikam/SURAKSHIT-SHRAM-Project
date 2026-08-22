@@ -8,7 +8,15 @@ class UserRegister(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=6)
-    role: UserRole = UserRole.COMPANY
+    # Self-registration is strictly restricted to COMPANY role.
+
+
+class AdminUserCreate(BaseModel):
+    email: EmailStr
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6)
+    role: UserRole
+    company_id: Optional[int] = None
 
 
 class UserLogin(BaseModel):
@@ -21,6 +29,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     username: str
     role: UserRole
+    company_id: Optional[int] = None
     is_active: bool
     created_at: datetime
 
@@ -32,6 +41,7 @@ class Token(BaseModel):
     token_type: str = "bearer"
     role: str
     user_id: int
+    company_id: Optional[int] = None
 
 
 class TokenPayload(BaseModel):

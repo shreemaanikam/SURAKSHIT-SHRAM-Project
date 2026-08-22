@@ -1,5 +1,6 @@
+import time
 from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from sqlalchemy.orm import Session
 
 from app.connectors.epfo_mock import MockEPFOConnector
@@ -92,10 +93,24 @@ class DataNormalizer:
 
 
 class SynchronizationService:
-    """Service handling manual and scheduled government data synchronization."""
+    """Service handling resilient government data synchronization with retries and batching."""
 
     def __init__(self, db: Session):
         self.db = db
+
+    def _execute_connector_with_retry(
+        self, connector: Any, reg_number: str, max_retries: int = 3
+    ) -> Dict[str, Any]:
+        """Execute connector synchronization with retry attempts and backoff."""
+        last_error = None
+        for attempt in range(1, max_retries + 1):
+            try:
+                return connector.synchronize(reg_number)
+            except Exception as e:
+                last_error = e
+                logger.warning(f"Connector {connector.source_name} sync attempt {attempt}/{max_retries} failed for {reg_number}: {e}")
+                time.sleep(0.1 * (2 ** (attempt - 1)))
+        raise last_error
 
     def sync_source(self, source_name: str, company_id: Optional[int] = None) -> Dict[str, Any]:
         """Synchronize data for a specific source idempotently across one or all companies."""
@@ -123,26 +138,47 @@ class SynchronizationService:
 
         synced_count = 0
         try:
-            query = self.db.query(Company)
+            query = self.db.query(Company).filter(Company.is_deleted == False)
             if company_id:
                 query = query.filter(Company.id == company_id)
             companies = query.all()
 
+            if not companies:
+                db_source.last_sync = datetime.now(timezone.utc)
+                db_source.sync_status = "SUCCESS"
+                db_source.error_message = None
+                self.db.commit()
+                return {
+                    "source": source_name_upper,
+                    "status": "SUCCESS",
+                    "message": "No active companies found for sync",
+                    "records_synced": 0,
+                    "timestamp": datetime.now(timezone.utc)
+                }
+
+            company_ids = [c.id for c in companies]
+
+            # Batch query existing compliance records to prevent N+1 queries
+            existing_records = self.db.query(ComplianceRecord).filter(
+                ComplianceRecord.company_id.in_(company_ids)
+            ).all()
+
+            # Build index lookup map: (company_id, compliance_type, reporting_period) -> ComplianceRecord
+            existing_map: Dict[Tuple[int, str, str], ComplianceRecord] = {
+                (rec.company_id, rec.compliance_type, rec.reporting_period): rec
+                for rec in existing_records
+            }
+
             for company in companies:
-                raw_bundle = connector.synchronize(company.registration_number)
+                raw_bundle = self._execute_connector_with_retry(connector, company.registration_number)
                 norm_records = DataNormalizer.normalize_compliance_records(
                     source_name_upper, raw_bundle.get("compliance_raw", [])
                 )
 
-                # Idempotent database insertion/update
                 for norm in norm_records:
-                    existing = self.db.query(ComplianceRecord).filter(
-                        ComplianceRecord.company_id == company.id,
-                        ComplianceRecord.compliance_type == norm.compliance_type,
-                        ComplianceRecord.reporting_period == norm.reporting_period
-                    ).first()
-
-                    if existing:
+                    key = (company.id, norm.compliance_type, norm.reporting_period)
+                    if key in existing_map:
+                        existing = existing_map[key]
                         existing.status = norm.status
                         existing.source = f"{source_name_upper}_MOCK"
                         existing.verified = True
@@ -157,6 +193,7 @@ class SynchronizationService:
                             verified=True
                         )
                         self.db.add(new_record)
+                        existing_map[key] = new_record
                     synced_count += 1
 
             db_source.last_sync = datetime.now(timezone.utc)
@@ -183,13 +220,16 @@ class SynchronizationService:
 
     def get_government_data(self, company_id: int, source_name: str = "EPFO") -> GovernmentDataResponse:
         """Fetch normalized government data view for a given company."""
-        company = self.db.query(Company).filter(Company.id == company_id).first()
+        company = self.db.query(Company).filter(
+            Company.id == company_id,
+            Company.is_deleted == False
+        ).first()
         if not company:
             raise NotFoundError("Company", company_id)
 
         source_upper = source_name.upper()
         connector = CONNECTORS.get(source_upper, CONNECTORS["EPFO"])
-        raw_bundle = connector.synchronize(company.registration_number)
+        raw_bundle = self._execute_connector_with_retry(connector, company.registration_number)
 
         company_norm = DataNormalizer.normalize_company_record(
             source_upper, company.registration_number, raw_bundle["company_raw"]
@@ -212,7 +252,6 @@ class SynchronizationService:
 
     def get_sync_status(self) -> List[DataSource]:
         """Fetch sync status for all government data connectors."""
-        # Ensure default sources exist
         for name in CONNECTORS.keys():
             existing = self.db.query(DataSource).filter(DataSource.source_name == name).first()
             if not existing:

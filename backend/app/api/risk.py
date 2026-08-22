@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.middleware.auth import get_current_user
+from app.middleware.auth import get_current_user, verify_company_access
 from app.models.user import User
 from app.schemas.risk import RiskScoreResponse
 from app.services.risk_service import RiskService
@@ -23,6 +23,7 @@ def calculate_risk(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = RiskService(db)
     score = service.calculate_company_risk(company_id)
     
@@ -46,5 +47,6 @@ def get_latest_risk(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = RiskService(db)
     return service.get_latest_risk_score(company_id)

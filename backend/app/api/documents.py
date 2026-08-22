@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.middleware.auth import get_current_user, require_company_user
+from app.middleware.auth import get_current_user, require_company_user, verify_company_access
 from app.models.user import User
 from app.schemas.document import DocumentResponse
 from app.services.document_service import DocumentService
@@ -26,6 +26,7 @@ async def upload_document(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_company_user)
 ):
+    verify_company_access(company_id, current_user)
     service = DocumentService(db)
     doc = await service.upload_document(
         company_id=company_id,
@@ -56,7 +57,9 @@ def get_document(
     current_user: User = Depends(get_current_user)
 ):
     service = DocumentService(db)
-    return service.get_document_by_id(id)
+    doc = service.get_document_by_id(id)
+    verify_company_access(doc.company_id, current_user)
+    return doc
 
 
 @router.get(
@@ -69,5 +72,6 @@ def list_company_documents(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    verify_company_access(company_id, current_user)
     service = DocumentService(db)
     return service.get_company_documents(company_id)

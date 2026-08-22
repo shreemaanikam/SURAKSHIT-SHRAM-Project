@@ -8,7 +8,7 @@ class MockEPFOConnector(GovernmentDataConnector):
     """Mock connector for Employees' Provident Fund Organisation (Central EPFO System)."""
 
     def __init__(self):
-        super().__init__(source_name="EPFO", api_base_url="https://epfindia.gov.in/mock-api/v1")
+        super().__init__(source_name="EPFO", api_base_url="https://mock.gov.in/epfo/v1")
 
     def authenticate(self) -> bool:
         self.authenticated = True

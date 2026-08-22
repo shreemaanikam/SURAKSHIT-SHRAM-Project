@@ -36,26 +36,28 @@ app = FastAPI(
 # SURAKSHIT SHRAM — Labor Compliance Platform API
 
 Backend & Data Integration Layer managing:
-* **Company Profiles** & Labor Registration
+* **Company Profiles** & Multi-Tenant Labor Registration
 * **Compliance Records** (EPFO, ESIC, LIN, State Laws)
 * **Document Verification** & Metadata Hashing (SHA-256)
 * **Inspection Workflow**, Violations & Improvement Notices
 * **Risk Engine Integrations**
 * **Government Data Connectors** (EPFO, ESIC, LIN, State Mock Interfaces)
-* **Data Normalization & Idempotent Sync Pipeline**
+* **Data Normalization & Resilient Idempotent Sync Pipeline**
 * **Privacy Controls & Audit Logging**
 """
 )
 
-# Set CORS middleware
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# CORS Configuration handling explicit origins without credential conflicts
+origins = [str(origin) for origin in settings.BACKEND_CORS_ORIGINS]
+has_wildcard = "*" in origins
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=not has_wildcard,  # Disable allow_credentials if wildcard '*' is configured
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 # Middleware stack
 app.add_middleware(RequestIDMiddleware)
