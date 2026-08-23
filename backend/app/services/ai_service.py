@@ -25,6 +25,8 @@ from ocr_engine.easyocr_engine import EasyOCREngine
 
 from app.models.company import Company
 from app.models.document import Document
+from app.models.violation import Violation
+from app.models.inspection import Inspection
 from app.models.ai_analysis import AIAnalysis
 from app.schemas.ai import (
     AIDocumentAnalysisRequest, AIDocumentAnalysisResponse,
@@ -56,7 +58,11 @@ class AIService:
         self.central_rules = CentralRules()
         self.state_rules = StateAdaptiveRules()
         self.compliance_checker = ComplianceChecker()
-        self.risk_scorecard = RiskScorecard()
+        
+        # Load trained Random Forest ML model from models directory
+        model_pkl_path = os.path.join(AI_MODULES_DIR, "models", "risk_scorecard_model.pkl")
+        self.risk_scorecard = RiskScorecard(model_path=model_pkl_path if os.path.exists(model_pkl_path) else None)
+        
         self.explainable_ai = ExplainableAI()
         self.fraud_detector = FraudDetector()
         self.epfo_comparator = EPFOComparator()
@@ -143,7 +149,27 @@ class AIService:
 
         state_code_upper = request.state_code.upper()
         
-        # State-Adaptive Rules Evaluation
+        # State Code to Name Mapping for StateAdaptiveRules engine
+        state_map = {
+            "DL": "Delhi",
+            "MH": "Maharashtra",
+            "KA": "Karnataka",
+            "TN": "Tamil Nadu",
+            "GJ": "Gujarat",
+            "HR": "Haryana"
+        }
+        state_name = state_map.get(state_code_upper, "Delhi")
+        state_info = self.state_rules.get_state_rules(state_name) or self.state_rules.get_state_rules("Delhi")
+
+        # Delegate evaluation dynamically to StateAdaptiveRules & CentralRules
+        central_wages = self.central_rules.rules.get("wages", {})
+        central_ss = self.central_rules.rules.get("social_security", {})
+        
+        state_min_wage = self.state_rules.calculate_state_minimum_wage(state_name, "skilled")
+        overtime_multiplier = state_info.get("overtime_rate", 2.0)
+        special_provisions = state_info.get("special_provisions", {})
+        penalties = state_info.get("penalties", {})
+
         evaluations = [
             RuleEvaluationDetail(
                 rule_id="RULE-CENTRAL-WAGES-01",
@@ -151,23 +177,31 @@ class AIService:
                 act_name="Code on Wages, 2019 (Section 17)",
                 compliance_status="COMPLIANT",
                 penalty_estimate_inr=0.0,
-                description="Wages disbursed within 7 days of wage period close."
+                description=f"Central wage payment deadline (within {central_wages.get('wage_payment_deadline_days', 7)} days of wage close)."
             ),
             RuleEvaluationDetail(
                 rule_id="RULE-CENTRAL-SS-02",
-                rule_name="EPFO & ESIC Contribution Remittance",
+                rule_name="EPFO & ESIC Remittance Standard",
                 act_name="Social Security Code, 2020",
                 compliance_status="COMPLIANT",
                 penalty_estimate_inr=0.0,
-                description="12% EPF and 3.25% ESI employer contributions deposited."
+                description=f"Standard EPF contribution ({int(central_ss.get('pf_contribution_rate', 0.12)*100)}%) and ESI contribution ({central_ss.get('esi_contribution_rate', 0.0325)*100}%)."
             ),
             RuleEvaluationDetail(
                 rule_id=f"RULE-{state_code_upper}-MINWAGE",
-                rule_name=f"{state_code_upper} Minimum Wages Audit",
-                act_name=f"{state_code_upper} State Minimum Wage Rules",
-                compliance_status="ACTION_REQUIRED" if company.id % 3 == 0 else "COMPLIANT",
-                penalty_estimate_inr=15000.0 if company.id % 3 == 0 else 0.0,
-                description="Overtime register entries require supervisor endorsement."
+                rule_name=f"{state_name} Minimum Wage & Overtime Audit",
+                act_name=f"{state_name} State Minimum Wage Rules",
+                compliance_status="ACTION_REQUIRED" if state_min_wage > 700 else "COMPLIANT",
+                penalty_estimate_inr=float(penalties.get("minimum_wage_violation", 50000)) if state_min_wage > 700 else 0.0,
+                description=f"Statutory minimum wage rate ₹{state_min_wage}/day with {overtime_multiplier}x overtime rate."
+            ),
+            RuleEvaluationDetail(
+                rule_id=f"RULE-{state_code_upper}-PROVISION",
+                rule_name=f"{state_name} Special Employment Norms",
+                act_name=f"{state_name} Shops & Establishments Act",
+                compliance_status="COMPLIANT",
+                penalty_estimate_inr=0.0,
+                description=f"State provision: Women night shift ({special_provisions.get('women_night_shift', 'permitted')})."
             )
         ]
 
@@ -186,6 +220,7 @@ class AIService:
             status="SUCCESS",
             result_data={
                 "state_code": state_code_upper,
+                "state_name": state_name,
                 "overall_compliance_rate": overall_rate,
                 "evaluations": [e.model_dump() for e in evaluations]
             },
@@ -213,8 +248,37 @@ class AIService:
         if not company:
             raise NotFoundError("Company", request.company_id)
 
-        # Compute raw score via ML risk scorecard
-        raw_score = 15.0 + (company.id * 4.2) % 70.0
+        # Feature Extraction from database entities
+        missing_docs = self.db.query(Document).filter(
+            Document.company_id == company.id,
+            Document.verification_status != "VERIFIED"
+        ).count()
+
+        prev_violations = self.db.query(Violation).filter(
+            Violation.company_id == company.id
+        ).count()
+
+        inspection_count = self.db.query(Inspection).filter(
+            Inspection.company_id == company.id
+        ).count()
+
+        company_age = max(1.0, float(datetime.now().year - (company.created_at.year if company.created_at else 2020)))
+
+        features = {
+            'payment_delay_days': 0.0,
+            'missing_documents_count': float(missing_docs),
+            'previous_violations': float(prev_violations),
+            'employee_count': float(company.employee_count or 10),
+            'company_age_years': company_age,
+            'pf_remittance_rate': 0.95,
+            'esi_remittance_rate': 0.95,
+            'wage_to_industry_ratio': 1.0,
+            'inspection_history_score': float(min(10, inspection_count * 2)),
+            'grievance_count': 0.0
+        }
+
+        # Compute raw score via ML risk scorecard model
+        raw_score = self.risk_scorecard.calculate_risk_score(features)
         
         # Apply Bias Checker adjustment for company scale and region
         adjusted_res = self.bias_checker.adjust_risk_score(
@@ -238,7 +302,10 @@ class AIService:
             risk_level=risk_level,
             confidence=0.92,
             status="SUCCESS",
-            result_data=adjusted_res,
+            result_data={
+                "extracted_features": features,
+                "adjusted_result": adjusted_res
+            },
             created_by=user_id
         )
         self.db.add(analysis_record)

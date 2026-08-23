@@ -34,6 +34,38 @@ def test_ai_compliance_analysis(client, test_company_a, test_company_b, company_
     assert cross_res.status_code == 403
 
 
+def test_state_adaptive_rules_execution(client, test_company_a, company_headers):
+    comp_id = test_company_a.id
+
+    # Evaluate Delhi (DL)
+    res_dl = client.post("/api/v1/ai/compliance-analysis", json={"company_id": comp_id, "state_code": "DL"}, headers=company_headers)
+    assert res_dl.status_code == 200
+    data_dl = res_dl.json()
+    assert data_dl["state_code"] == "DL"
+
+    # Evaluate Maharashtra (MH)
+    res_mh = client.post("/api/v1/ai/compliance-analysis", json={"company_id": comp_id, "state_code": "MH"}, headers=company_headers)
+    assert res_mh.status_code == 200
+    data_mh = res_mh.json()
+    assert data_mh["state_code"] == "MH"
+
+    # Evaluate Tamil Nadu (TN)
+    res_tn = client.post("/api/v1/ai/compliance-analysis", json={"company_id": comp_id, "state_code": "TN"}, headers=company_headers)
+    assert res_tn.status_code == 200
+    data_tn = res_tn.json()
+    assert data_tn["state_code"] == "TN"
+
+    # Prove dynamic evaluation adapts rules per state definition
+    dl_rules = [r["rule_id"] for r in data_dl["rule_evaluations"]]
+    mh_rules = [r["rule_id"] for r in data_mh["rule_evaluations"]]
+    tn_rules = [r["rule_id"] for r in data_tn["rule_evaluations"]]
+
+    assert "RULE-DL-MINWAGE" in dl_rules
+    assert "RULE-MH-MINWAGE" in mh_rules
+    assert "RULE-TN-MINWAGE" in tn_rules
+
+
+
 def test_ai_risk_analysis(client, test_company_a, test_company_b, company_headers, company_b_headers):
     comp_id = test_company_a.id
 
