@@ -62,10 +62,10 @@
 
 ## 5. Seed Accounts for Live Demo
 
-- **Admin User**: `sysadmin` / `AdminSecret2026!`
-- **Company User**: `bharat_textiles` / `CompanySecret2026!`
-- **Inspector User**: `inspector_sharma` / `InspectorSecret2026!`
-- **Government Officer**: `gov_nodal` / `GovOfficerSecret2026!`
+- **Admin User**: `sysadmin` / `<DEMO_ADMIN_PASSWORD>`
+- **Company User**: `bharat_textiles` / `<DEMO_COMPANY_PASSWORD>`
+- **Inspector User**: `inspector_sharma` / `<DEMO_INSPECTOR_PASSWORD>`
+- **Government Officer**: `gov_nodal` / `<DEMO_GOVERNMENT_PASSWORD>`
 
 ---
 

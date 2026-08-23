@@ -64,39 +64,44 @@ def seed_database():
             db.refresh(c)
 
         print("👤 Creating synthetic default users across roles...")
+        # Fetch demo credentials from environment variables or fallback defaults
+        admin_pass = os.getenv("DEMO_ADMIN_PASSWORD", "AdminDemoPass2026!")
+        inspector_pass = os.getenv("DEMO_INSPECTOR_PASSWORD", "InspectorDemoPass2026!")
+        gov_pass = os.getenv("DEMO_GOVERNMENT_PASSWORD", "GovOfficerDemoPass2026!")
+        company_pass = os.getenv("DEMO_COMPANY_PASSWORD", "CompanyDemoPass2026!")
+
         admin_user = User(
-            email="admin@surakshit.gov.in",
             username="sysadmin",
-            password_hash=get_password_hash("AdminSecret2026!"),
-            role=UserRole.ADMIN,
+            email="admin@surakshit.gov.in",
+            password_hash=get_password_hash(admin_pass),
+            role="ADMIN",
             is_active=True
         )
         inspector_user = User(
-            email="inspector.sharma@labour.gov.in",
             username="inspector_sharma",
-            password_hash=get_password_hash("InspectorSecret2026!"),
-            role=UserRole.INSPECTOR,
+            email="inspector.sharma@labour.gov.in",
+            password_hash=get_password_hash(inspector_pass),
+            role="INSPECTOR",
             is_active=True
         )
         gov_user = User(
-            email="nodal.officer@labour.gov.in",
             username="gov_nodal",
-            password_hash=get_password_hash("GovOfficerSecret2026!"),
-            role=UserRole.GOVERNMENT,
+            email="nodal.officer@labour.gov.in",
+            password_hash=get_password_hash(gov_pass),
+            role="GOVERNMENT",
             is_active=True
         )
         company_user = User(
-            email="compliance@bharattextiles.synth",
             username="bharat_textiles",
-            password_hash=get_password_hash("CompanySecret2026!"),
-            role=UserRole.COMPANY,
-            company_id=companies[0].id,
+            email="compliance@bharattextiles.synth",
+            password_hash=get_password_hash(company_pass),
+            role="COMPANY",
+            company_id=1,
             is_active=True
         )
         db.add_all([admin_user, inspector_user, gov_user, company_user])
         db.commit()
         db.refresh(inspector_user)
-        db.refresh(company_user)
 
         print("📜 Seeding compliance records, inspections, violations, and risk scores...")
         for comp in companies:

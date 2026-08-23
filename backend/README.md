@@ -297,7 +297,7 @@ docker-compose up --build
 
 | Role | Username / Email | Password |
 | :--- | :--- | :--- |
-| **ADMIN** | `sysadmin` / `admin@surakshit.gov.in` | `AdminSecret2026!` |
-| **INSPECTOR** | `inspector_sharma` / `inspector.sharma@labour.gov.in` | `InspectorSecret2026!` |
-| **GOVERNMENT** | `gov_nodal` / `nodal.officer@labour.gov.in` | `GovOfficerSecret2026!` |
-| **COMPANY** | `bharat_textiles` / `compliance@bharattextiles.synth` | `CompanySecret2026!` |
+| **ADMIN** | `sysadmin` / `admin@surakshit.gov.in` | `<DEMO_ADMIN_PASSWORD>` |
+| **INSPECTOR** | `inspector_sharma` / `inspector.sharma@labour.gov.in` | `<DEMO_INSPECTOR_PASSWORD>` |
+| **GOVERNMENT** | `gov_nodal` / `nodal.officer@labour.gov.in` | `<DEMO_GOVERNMENT_PASSWORD>` |
+| **COMPANY** | `bharat_textiles` / `compliance@bharattextiles.synth` | `<DEMO_COMPANY_PASSWORD>` |
