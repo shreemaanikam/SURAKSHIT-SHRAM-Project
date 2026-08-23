@@ -83,6 +83,66 @@ export interface ApiSyncStatus {
   active_sources: number;
 }
 
+export interface ApiAIDocumentResponse {
+  document_id?: number;
+  document_type: string;
+  ocr_extracted_text: string;
+  confidence_score: number;
+  key_fields: Record<string, any>;
+  fraud_risk_level: string;
+  processing_timestamp: string;
+}
+
+export interface ApiAIComplianceResponse {
+  company_id: number;
+  state_code: string;
+  overall_compliance_rate: number;
+  evaluated_rules_count: number;
+  rule_evaluations: Array<{
+    rule_id: string;
+    rule_name: string;
+    act_name: string;
+    compliance_status: string;
+    penalty_estimate_inr: number;
+    description: string;
+  }>;
+  analysis_timestamp: string;
+}
+
+export interface ApiAIRiskResponse {
+  company_id: number;
+  raw_risk_score: number;
+  adjusted_risk_score: number;
+  risk_level: string;
+  bias_adjustment_applied: boolean;
+  adjustment_reason: string;
+  model_version: string;
+  timestamp: string;
+}
+
+export interface ApiAIRiskExplanationResponse {
+  company_id: number;
+  composite_risk_score: number;
+  risk_level: string;
+  shap_explainability_factors: Array<{
+    factor_name: string;
+    weight: number;
+    contribution_score: number;
+    explanation: string;
+  }>;
+  recommended_interventions: string[];
+  model_metadata: Record<string, any>;
+}
+
+export interface ApiAIFraudResponse {
+  company_id: number;
+  is_fraud: boolean;
+  confidence_score: number;
+  anomaly_reasons: string[];
+  features_extracted: Record<string, any>;
+  analysis_timestamp: string;
+}
+
 class ApiClient {
   private getAuthHeader(): Record<string, string> {
     if (typeof window !== "undefined") {
@@ -168,6 +228,42 @@ class ApiClient {
   // Risk Score Methods
   async getCompanyRisk(companyId: number): Promise<ApiRiskScore> {
     return this.request<ApiRiskScore>(`/companies/${companyId}/risk`);
+  }
+
+  // AI Engine Gateway Methods
+  async analyzeAIDocument(document_id?: number, document_type = "ECR_CHALLAN"): Promise<ApiAIDocumentResponse> {
+    return this.request<ApiAIDocumentResponse>("/ai/document-analysis", {
+      method: "POST",
+      body: JSON.stringify({ document_id, document_type }),
+    });
+  }
+
+  async analyzeAICompliance(companyId: number, stateCode = "DL"): Promise<ApiAIComplianceResponse> {
+    return this.request<ApiAIComplianceResponse>("/ai/compliance-analysis", {
+      method: "POST",
+      body: JSON.stringify({ company_id: companyId, state_code: stateCode }),
+    });
+  }
+
+  async calculateAIRisk(companyId: number): Promise<ApiAIRiskResponse> {
+    return this.request<ApiAIRiskResponse>("/ai/risk-analysis", {
+      method: "POST",
+      body: JSON.stringify({ company_id: companyId }),
+    });
+  }
+
+  async getAIRiskExplanation(companyId: number): Promise<ApiAIRiskExplanationResponse> {
+    return this.request<ApiAIRiskExplanationResponse>("/ai/risk-explanation", {
+      method: "POST",
+      body: JSON.stringify({ company_id: companyId }),
+    });
+  }
+
+  async analyzeAIFraud(companyId: number, document_text?: string): Promise<ApiAIFraudResponse> {
+    return this.request<ApiAIFraudResponse>("/ai/fraud-analysis", {
+      method: "POST",
+      body: JSON.stringify({ company_id: companyId, document_text }),
+    });
   }
 
   // Sync Methods

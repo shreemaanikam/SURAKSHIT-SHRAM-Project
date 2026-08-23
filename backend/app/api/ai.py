@@ -7,7 +7,9 @@ from app.models.user import User
 from app.schemas.ai import (
     AIDocumentAnalysisRequest, AIDocumentAnalysisResponse,
     AIComplianceAnalysisRequest, AIComplianceAnalysisResponse,
-    AIRiskExplanationRequest, AIRiskExplanationResponse
+    AIRiskExplanationRequest, AIRiskExplanationResponse,
+    AIRiskAnalysisRequest, AIRiskAnalysisResponse,
+    AIFraudAnalysisRequest, AIFraudAnalysisResponse
 )
 from app.services.ai_service import AIService
 from app.services.audit_service import AuditService
@@ -28,7 +30,7 @@ def analyze_document(
     current_user: User = Depends(get_current_user)
 ):
     service = AIService(db)
-    res = service.analyze_document(payload)
+    res = service.analyze_document(payload, user_id=current_user.id)
     
     AuditService.log_action(
         db=db,
@@ -54,11 +56,37 @@ def analyze_compliance_rules(
 ):
     verify_company_access(payload.company_id, current_user)
     service = AIService(db)
-    res = service.analyze_compliance_rules(payload)
+    res = service.analyze_compliance_rules(payload, user_id=current_user.id)
     
     AuditService.log_action(
         db=db,
         action="AI_RULE_EVALUATION",
+        resource_type="Company",
+        resource_id=str(payload.company_id),
+        user_id=current_user.id
+    )
+    return res
+
+
+@router.post(
+    "/risk-analysis",
+    response_model=AIRiskAnalysisResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Calculate ML risk score with fairness bias adjustment",
+    description="Computes company risk score via Random Forest ML model and applies regional/scale fairness corrections."
+)
+def calculate_risk(
+    payload: AIRiskAnalysisRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    verify_company_access(payload.company_id, current_user)
+    service = AIService(db)
+    res = service.calculate_risk(payload, user_id=current_user.id)
+    
+    AuditService.log_action(
+        db=db,
+        action="AI_RISK_CALCULATION",
         resource_type="Company",
         resource_id=str(payload.company_id),
         user_id=current_user.id
@@ -80,11 +108,37 @@ def explain_risk(
 ):
     verify_company_access(payload.company_id, current_user)
     service = AIService(db)
-    res = service.explain_risk(payload)
+    res = service.explain_risk(payload, user_id=current_user.id)
     
     AuditService.log_action(
         db=db,
         action="AI_RISK_EXPLANATION",
+        resource_type="Company",
+        resource_id=str(payload.company_id),
+        user_id=current_user.id
+    )
+    return res
+
+
+@router.post(
+    "/fraud-analysis",
+    response_model=AIFraudAnalysisResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Run Isolation Forest anomaly and EPFO discrepancy detector",
+    description="Detects statistical anomalies in payroll documents and flags discrepancies."
+)
+def analyze_fraud(
+    payload: AIFraudAnalysisRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    verify_company_access(payload.company_id, current_user)
+    service = AIService(db)
+    res = service.analyze_fraud(payload, user_id=current_user.id)
+    
+    AuditService.log_action(
+        db=db,
+        action="AI_FRAUD_ANALYSIS",
         resource_type="Company",
         resource_id=str(payload.company_id),
         user_id=current_user.id

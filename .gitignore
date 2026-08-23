@@ -52,6 +52,10 @@ __pycache__/
 *.sqlite
 *.sqlite3
 
+# Large Model Weights (EasyOCR download cache)
+*.pth
+AI_Modules/models/easyocr/
+
 # Document Storage
 storage/documents/*
 !storage/documents/.gitkeep

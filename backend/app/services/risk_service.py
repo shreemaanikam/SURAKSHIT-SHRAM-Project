@@ -1,3 +1,5 @@
+import sys
+import os
 import json
 from datetime import datetime, timezone
 from typing import List, Optional, Tuple
@@ -8,12 +10,22 @@ from app.models.compliance import ComplianceRecord
 from app.models.violation import Violation
 from app.core.exceptions import NotFoundError
 
+# Ensure AI_Modules is accessible
+AI_MODULES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "AI_Modules"))
+if not os.path.exists(AI_MODULES_DIR):
+    AI_MODULES_DIR = os.path.abspath("AI_Modules")
+if AI_MODULES_DIR not in sys.path:
+    sys.path.insert(0, AI_MODULES_DIR)
+
+from bias_detection.bias_checker import BiasChecker
+
 
 class RiskService:
-    """Risk calculation service for evaluating labor compliance risk scores."""
+    """Risk calculation service for evaluating labor compliance risk scores with AI Fairness adjustments."""
 
     def __init__(self, db: Session):
         self.db = db
+        self.bias_checker = BiasChecker()
 
     def calculate_company_risk(self, company_id: int) -> RiskScore:
         company = self.db.query(Company).filter(Company.id == company_id).first()
@@ -27,7 +39,7 @@ class RiskService:
             Violation.company_id == company_id
         ).all()
 
-        score = 10.0  # Base line score
+        score = 10.0  # Baseline score
         reasons = []
 
         # Evaluate compliance records
@@ -64,6 +76,18 @@ class RiskService:
             score += 5.0
             reasons.append("Large scale establishment (>500 workers) increases risk exposure.")
 
+        # Apply AI Bias Checker Adjustment
+        bias_res = self.bias_checker.adjust_risk_score(
+            company_id=str(company.id),
+            region=company.state,
+            industry=company.industry,
+            business_size=company.company_size,
+            risk_score=score
+        )
+        score = float(bias_res.get("adjusted_score", score))
+        if bias_res.get("adjustment_applied"):
+            reasons.append(f"AI Bias Correction: {bias_res.get('reason')}")
+
         # Cap score between 0.0 and 100.0
         score = min(100.0, max(0.0, score))
 
@@ -85,7 +109,7 @@ class RiskService:
             risk_level=risk_level,
             reasons=json.dumps(reasons),
             calculated_at=datetime.now(timezone.utc),
-            model_version="v1.0-rules-engine"
+            model_version="v2.1-ai-risk-scorecard"
         )
         self.db.add(risk_entry)
         self.db.commit()

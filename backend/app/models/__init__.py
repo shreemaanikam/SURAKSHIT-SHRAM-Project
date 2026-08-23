@@ -9,6 +9,7 @@ from app.models.risk_score import RiskScore
 from app.models.improvement_notice import ImprovementNotice
 from app.models.data_source import DataSource
 from app.models.audit_log import AuditLog
+from app.models.ai_analysis import AIAnalysis
 
 __all__ = [
     "Base",
@@ -22,5 +23,6 @@ __all__ = [
     "RiskScore",
     "ImprovementNotice",
     "DataSource",
-    "AuditLog"
+    "AuditLog",
+    "AIAnalysis"
 ]

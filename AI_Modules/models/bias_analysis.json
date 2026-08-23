@@ -1,0 +1,39 @@
+{
+  "region": {
+    "group_averages": {
+      "Kolkata": 35.45454545454545,
+      "Delhi": 68.95238095238095,
+      "Chennai": 36.18181818181818,
+      "Mumbai": 46.861111111111114,
+      "Bangalore": 36.3235294117647
+    },
+    "max_score": 68.95238095238095,
+    "min_score": 35.45454545454545,
+    "disparity_ratio": 1.9448107448107448,
+    "bias_detected": true
+  },
+  "industry": {
+    "group_averages": {
+      "Construction": 53.58536585365854,
+      "Manufacturing": 44.25,
+      "Retail": 46.5,
+      "Healthcare": 41.68292682926829,
+      "IT": 37.25
+    },
+    "max_score": 53.58536585365854,
+    "min_score": 37.25,
+    "disparity_ratio": 1.4385333115076118,
+    "bias_detected": false
+  },
+  "business_size": {
+    "group_averages": {
+      "large": 37.14035087719298,
+      "medium": 43.054794520547944,
+      "small": 53.0
+    },
+    "max_score": 53.0,
+    "min_score": 37.14035087719298,
+    "disparity_ratio": 1.4270193670288145,
+    "bias_detected": false
+  }
+}

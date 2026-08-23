@@ -1,0 +1,11 @@
+{
+  "feature_names": [
+    "payment_delay_days",
+    "missing_documents_count",
+    "previous_violations",
+    "employee_count",
+    "company_age_years"
+  ],
+  "n_estimators": 100,
+  "max_depth": 10
+}

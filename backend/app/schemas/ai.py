@@ -62,3 +62,33 @@ class AIRiskExplanationResponse(BaseModel):
     shap_explainability_factors: List[RiskFactorDetail]
     recommended_interventions: List[str]
     model_metadata: Dict[str, Any]
+
+
+class AIRiskAnalysisRequest(BaseModel):
+    company_id: int
+
+
+class AIRiskAnalysisResponse(BaseModel):
+    company_id: int
+    raw_risk_score: float
+    adjusted_risk_score: float
+    risk_level: str
+    bias_adjustment_applied: bool
+    adjustment_reason: str
+    model_version: str
+    timestamp: str
+
+
+class AIFraudAnalysisRequest(BaseModel):
+    company_id: int
+    document_text: Optional[str] = None
+    company_lin: Optional[str] = None
+
+
+class AIFraudAnalysisResponse(BaseModel):
+    company_id: int
+    is_fraud: bool
+    confidence_score: float
+    anomaly_reasons: List[str]
+    features_extracted: Dict[str, Any]
+    analysis_timestamp: str

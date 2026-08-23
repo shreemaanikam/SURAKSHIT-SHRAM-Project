@@ -1,0 +1,10 @@
+{
+  "feature_names": [
+    "word_count",
+    "numeric_count",
+    "unique_words_ratio",
+    "repeated_lines"
+  ],
+  "contamination": 0.1,
+  "n_estimators": 100
+}
