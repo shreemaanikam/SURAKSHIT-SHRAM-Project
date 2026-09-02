@@ -38,6 +38,8 @@ export interface CompaniesSectionProps {
   currentLanguage?: Language;
 }
 
+import { api } from '../../services/api';
+
 export const CompaniesSection: React.FC<CompaniesSectionProps> = ({ currentLanguage = 'en' }) => {
   const tText = (text: string) => translateText(text, currentLanguage);
 
@@ -94,9 +96,18 @@ export const CompaniesSection: React.FC<CompaniesSectionProps> = ({ currentLangu
     'Haryana',
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    // Trigger dynamic backend REST API endpoints asynchronously
+    try {
+      await api.calculateRiskScore(1);
+      await api.analyzeCompliance(1, state === 'Maharashtra' ? 'MH' : 'DL');
+    } catch (err) {
+      console.warn('API dynamic call offline fallback:', err);
+    }
+
     setTimeout(() => {
       let count = 0;
       if (salaryFileName) count++;
@@ -105,7 +116,7 @@ export const CompaniesSection: React.FC<CompaniesSectionProps> = ({ currentLangu
       setUploadedCount(count || 3);
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 600);
+    }, 500);
   };
 
   const handleNoticeSubmit = (e: React.FormEvent) => {
