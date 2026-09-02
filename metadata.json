@@ -1,0 +1,6 @@
+{
+  "name": "Surakshit Shram",
+  "description": "AI-Driven Smart Inspection System for Labour Code Compliance - Ministry of Labour & Employment Enterprise Portal",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
