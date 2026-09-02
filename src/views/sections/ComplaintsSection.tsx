@@ -22,7 +22,14 @@ interface RecentComplaint {
   isResolved?: boolean;
 }
 
-export const ComplaintsSection: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface ComplaintsSectionProps {
+  currentLanguage?: Language;
+}
+
+export const ComplaintsSection: React.FC<ComplaintsSectionProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
   const [yourName, setYourName] = useState('Kavin');
   const [companyName, setCompanyName] = useState('ABC Manufacturing');
   const [companyLin, setCompanyLin] = useState('2024-0789');

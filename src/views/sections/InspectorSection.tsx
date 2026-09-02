@@ -29,7 +29,14 @@ interface PastRecord {
   status: 'Resolved' | 'Pending Penalty' | 'Notice Issued';
 }
 
-export const InspectorSection: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface InspectorSectionProps {
+  currentLanguage?: Language;
+}
+
+export const InspectorSection: React.FC<InspectorSectionProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
   const [selectedCompany, setSelectedCompany] = useState('ABC Manufacturing');
   const [isOffline, setIsOffline] = useState(false);
   const [photoEvidence, setPhotoEvidence] = useState<string | null>(null);

@@ -33,7 +33,14 @@ interface PlatformStat {
   color: string;
 }
 
-export const GigWorkersSection: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface GigWorkersSectionProps {
+  currentLanguage?: Language;
+}
+
+export const GigWorkersSection: React.FC<GigWorkersSectionProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
   const [workerName, setWorkerName] = useState('');
   const [platform, setPlatform] = useState('Zomato');
   const [hoursWorked, setHoursWorked] = useState('');

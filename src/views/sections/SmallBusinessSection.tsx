@@ -13,7 +13,14 @@ import {
   Shield
 } from 'lucide-react';
 
-export const SmallBusinessSection: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface SmallBusinessSectionProps {
+  currentLanguage?: Language;
+}
+
+export const SmallBusinessSection: React.FC<SmallBusinessSectionProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
   const [businessName, setBusinessName] = useState('KYC');
   const [ownerName, setOwnerName] = useState('Vimal');
   const [state, setState] = useState('Maharashtra');

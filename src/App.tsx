@@ -8,11 +8,12 @@ import { SmallBusinessSection } from './views/sections/SmallBusinessSection';
 import { ComplaintsSection } from './views/sections/ComplaintsSection';
 import { GovFooter } from './components/layout/GovFooter';
 import { Language } from './services/languageService';
+import { LanguageProvider, useLanguage } from './services/LanguageContext';
 
-export default function App() {
+function AppContent() {
   const [activeSection, setActiveSection] = useState<ActiveSection>('companies');
   const [currentUserRole, setCurrentUserRole] = useState<UserRole>('company');
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
+  const { currentLanguage, setLanguage } = useLanguage();
 
   // Handle hash change from URL or external navigation
   useEffect(() => {
@@ -47,28 +48,36 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
-      {/* 1. Official Government Header with Emblem, Title, Navigation Tabs, Role Switcher & AI Bhashini Translate */}
+      {/* 1. Official Government Header with Emblem, Title, Navigation Tabs, Role Switcher & Language Selector */}
       <SurakshitHeader
         activeSection={activeSection}
         onSelectSection={handleSelectSection}
         currentLanguage={currentLanguage}
-        onLanguageChange={setCurrentLanguage}
+        onLanguageChange={setLanguage}
         currentUserRole={currentUserRole}
         onRoleChange={handleRoleChange}
       />
 
       {/* 2. Main Content Area Rendering the Active Separate Section */}
       <main className="flex-1 w-full pb-12">
-        {activeSection === 'companies' && <CompaniesSection />}
-        {activeSection === 'inspector' && <InspectorSection />}
-        {activeSection === 'government' && <GovernmentSection />}
-        {activeSection === 'gigworkers' && <GigWorkersSection />}
-        {activeSection === 'smallbiz' && <SmallBusinessSection />}
-        {activeSection === 'complaints' && <ComplaintsSection />}
+        {activeSection === 'companies' && <CompaniesSection currentLanguage={currentLanguage} />}
+        {activeSection === 'inspector' && <InspectorSection currentLanguage={currentLanguage} />}
+        {activeSection === 'government' && <GovernmentSection currentLanguage={currentLanguage} />}
+        {activeSection === 'gigworkers' && <GigWorkersSection currentLanguage={currentLanguage} />}
+        {activeSection === 'smallbiz' && <SmallBusinessSection currentLanguage={currentLanguage} />}
+        {activeSection === 'complaints' && <ComplaintsSection currentLanguage={currentLanguage} />}
       </main>
 
       {/* 3. Official Government Footer */}
-      <GovFooter />
+      <GovFooter currentLanguage={currentLanguage} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }

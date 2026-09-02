@@ -11,7 +11,14 @@ import {
   Lock,
 } from 'lucide-react';
 
-export const GovFooter: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface GovFooterProps {
+  currentLanguage?: Language;
+}
+
+export const GovFooter: React.FC<GovFooterProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
   return (
     <footer className="mt-auto bg-[#0A192F] text-slate-300 text-xs select-none">
       {/* 1. Indian Tricolor Bar Accent */}

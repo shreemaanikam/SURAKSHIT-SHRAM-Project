@@ -32,7 +32,15 @@ import {
   Cell
 } from 'recharts';
 
-export const CompaniesSection: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface CompaniesSectionProps {
+  currentLanguage?: Language;
+}
+
+export const CompaniesSection: React.FC<CompaniesSectionProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
+
   const [activeTab, setActiveTab] = useState<'upload' | 'notices'>('upload');
   const [companyName, setCompanyName] = useState('ABC Manufacturing');
   const [companyLin, setCompanyLin] = useState('2024-0789');
@@ -114,10 +122,10 @@ export const CompaniesSection: React.FC = () => {
       {/* Section Title Header */}
       <div className="text-center space-y-1">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Company Dashboard & Compliance Hub
+          {tText('Company Dashboard & Compliance Hub')}
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-          View your real-time risk score with reasons, upload compliance documents, and respond to 30-day improvement notices.
+          {tText('View your real-time risk score with reasons, upload compliance documents, and respond to 30-day improvement notices.')}
         </p>
 
         {/* Sub-Tabs: Upload / Notices */}
@@ -132,7 +140,7 @@ export const CompaniesSection: React.FC = () => {
               }`}
             >
               <Upload className="w-3.5 h-3.5" />
-              <span>1. Upload Documents & Risk Score</span>
+              <span>{tText('1. Upload Documents & Risk Score')}</span>
             </button>
             <button
               onClick={() => setActiveTab('notices')}
@@ -143,7 +151,7 @@ export const CompaniesSection: React.FC = () => {
               }`}
             >
               <Mail className="w-3.5 h-3.5 text-amber-600" />
-              <span>2. Respond to Improvement Notices (30-Day Grace)</span>
+              <span>{tText('2. Respond to Improvement Notices (30-Day Grace)')}</span>
               {!isNoticeResolved && (
                 <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping absolute -top-0.5 -right-0.5" />
               )}
@@ -160,10 +168,10 @@ export const CompaniesSection: React.FC = () => {
             <div className="border-b border-slate-100 pb-3">
               <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <Upload className="w-5 h-5 text-blue-600" />
-                <span>Upload Documents</span>
+                <span>{tText('Upload Documents')}</span>
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Submit your salary sheets, attendance logs, and contractor lists
+                {tText('Submit your salary sheets, attendance logs, and contractor lists')}
               </p>
             </div>
 
@@ -171,7 +179,7 @@ export const CompaniesSection: React.FC = () => {
               {/* Company Name */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Company Name
+                  {tText('Company Name')}
                 </label>
                 <div className="relative">
                   <input
@@ -188,7 +196,7 @@ export const CompaniesSection: React.FC = () => {
               {/* Company LIN */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Company LIN
+                  {tText('Company LIN')}
                 </label>
                 <div className="relative">
                   <input
@@ -205,7 +213,7 @@ export const CompaniesSection: React.FC = () => {
               {/* State Selection */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  State
+                  {tText('State')}
                 </label>
                 <select
                   value={state}
@@ -224,11 +232,11 @@ export const CompaniesSection: React.FC = () => {
               {/* 1. Upload Salary Sheet */}
               <div className="space-y-1">
                 <label className="block text-xs font-bold text-slate-700">
-                  Upload Salary Sheet
+                  {tText('Upload Salary Sheet')}
                 </label>
                 <div className="flex items-center gap-2">
                   <label className="cursor-pointer px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-xs font-medium text-slate-700 shadow-2xs transition-colors">
-                    <span>Choose File</span>
+                    <span>{tText('Choose File')}</span>
                     <input
                       type="file"
                       className="hidden"
@@ -249,11 +257,11 @@ export const CompaniesSection: React.FC = () => {
               {/* 2. Upload Attendance Log */}
               <div className="space-y-1">
                 <label className="block text-xs font-bold text-slate-700">
-                  Upload Attendance Log
+                  {tText('Upload Attendance Log')}
                 </label>
                 <div className="flex items-center gap-2">
                   <label className="cursor-pointer px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-xs font-medium text-slate-700 shadow-2xs transition-colors">
-                    <span>Choose File</span>
+                    <span>{tText('Choose File')}</span>
                     <input
                       type="file"
                       className="hidden"
@@ -274,11 +282,11 @@ export const CompaniesSection: React.FC = () => {
               {/* 3. Upload Contractor List */}
               <div className="space-y-1">
                 <label className="block text-xs font-bold text-slate-700">
-                  Upload Contractor List
+                  {tText('Upload Contractor List')}
                 </label>
                 <div className="flex items-center gap-2">
                   <label className="cursor-pointer px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-xs font-medium text-slate-700 shadow-2xs transition-colors">
-                    <span>Choose File</span>
+                    <span>{tText('Choose File')}</span>
                     <input
                       type="file"
                       className="hidden"
@@ -311,7 +319,7 @@ export const CompaniesSection: React.FC = () => {
                   ) : (
                     <>
                       <FileCheck className="w-4 h-4" />
-                      <span>Submit Documents</span>
+                      <span>{tText('Submit Documents')}</span>
                     </>
                   )}
                 </button>
@@ -334,7 +342,7 @@ export const CompaniesSection: React.FC = () => {
             <div className="border-b border-slate-100 pb-3">
               <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-500" />
-                <span>Risk Assessment & Reasons</span>
+                <span>{tText('Risk Assessment & Reasons')}</span>
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
                 Real-time compliance score and weighted risk graph
@@ -347,13 +355,13 @@ export const CompaniesSection: React.FC = () => {
                   <FileText className="w-6 h-6" />
                 </div>
                 <p className="text-xs sm:text-sm text-slate-500">
-                  ⏳ Submit your documents or click below to simulate instant analysis
+                  ⏳ {tText('Submit your documents or click below to simulate instant analysis')}
                 </p>
                 <button
                   onClick={() => setIsSubmitted(true)}
                   className="text-xs font-bold text-blue-700 hover:underline"
                 >
-                  ⚡ Load Instant Compliance Assessment
+                  {tText('Load Instant Compliance Assessment')}
                 </button>
               </div>
             ) : (

@@ -7,6 +7,7 @@ export interface TranslationDictionary {
 }
 
 export const translations: TranslationDictionary = {
+  // Navigation Header
   portalTitle: {
     en: 'Surakshit Shram',
     hi: 'सुरक्षित श्रम',
@@ -107,4 +108,245 @@ export const translations: TranslationDictionary = {
     gu: 'AI અનુવાદ સક્રિય છે',
     kn: 'AI ಅನುವಾದ ಸಕ್ರಿಯವಾಗಿದೆ',
   },
+
+  // Company Dashboard Section
+  companyHubTitle: {
+    en: 'Company Dashboard & Compliance Hub',
+    hi: 'कंपनी डैशबोर्ड एवं अनुपालन केंद्र',
+    mr: 'कंपनी डॅशबोर्ड आणि अनुपालन केंद्र',
+    ta: 'நிறுவன டாஷ்போர்டு மற்றும் இணக்க மையம்',
+    te: 'కంపెనీ డాష్‌బోర్డ్ & సమ్మతి కేంద్రం',
+    bn: 'কোম্পানি ড্যাশবোর্ড এবং সম্মতি হাব',
+    gu: 'કંપની ડેશબોર્ડ અને પાલન કેન્દ્ર',
+    kn: 'ಕಂಪನಿ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಮತ್ತು ಅನುಸರಣೆ ಕೇಂದ್ರ',
+  },
+  companyHubSubtitle: {
+    en: 'View your real-time risk score with reasons, upload compliance documents, and respond to 30-day improvement notices.',
+    hi: 'कारणों के साथ अपना वास्तविक समय जोखिम स्कोर देखें, अनुपालन दस्तावेज अपलोड करें और 30-दिवसीय सुधार नोटिस का उत्तर दें।',
+    mr: 'कारणांसह तुमचा रिअल-टाइम जोखीम स्कोअर पहा, अनुपालन दस्तऐवज अपलोड करा आणि ३० दिवसांच्या सुधारणा सूचनांना उत्तर द्या.',
+    ta: 'காரணங்களுடன் உங்கள் நிகழ்நேர அபாய மதிப்பெண்ணைப் பார்க்கவும், இணக்க ஆவணங்களை பதிவேற்றவும், 30 நாள் மேம்பாட்டு அறிவிப்புகளுக்கு பதிலளிக்கவும்.',
+    te: 'కారణాలతో మీ రియల్-టైమ్ రిస్క్ స్కోర్‌ను చూడండి, సమ్మతి పత్రాలను అప్‌లోడ్ చేయండి మరియు 30 రోజుల మెరుగుదల నోటీసులకు స్పందించండి.',
+    bn: 'কারণসহ আপনার রিয়েল-টাইম ঝুঁকি স্কোর দেখুন, সম্মতি নথি আপলোড করুন এবং ৩০ দিনের উন্নতি নোটিশের উত্তর দিন।',
+    gu: 'કારણો સાથે તમારો રીઅલ-ટાઇમ જોખમ સ્કોર જુઓ, પાલન દસ્તાવેજો અપલોડ કરો અને 30-દિવસની સુધારણા નોટિસનો પ્રતિસાદ આપો.',
+    kn: 'ಕಾರಣಗಳೊಂದಿಗೆ ನಿಮ್ಮ ನೈಜ-ಸಮಯದ ಅಪಾಯದ ಅಂಕವನ್ನು ವೀಕ್ಷಿಸಿ, ಅನುಸರಣೆ ದಾಖಲೆಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ ಮತ್ತು 30 ದಿನಗಳ ಸುಧಾರಣಾ ನೋಟಿಸ್‌ಗಳಿಗೆ ಪ್ರತಿಕ್ರಿಯಿಸಿ.',
+  },
+  btnUploadDocs: {
+    en: '1. Upload Documents & Risk Score',
+    hi: '1. दस्तावेज अपलोड एवं जोखिम स्कोर',
+    mr: '१. दस्तऐवज अपलोड आणि जोखीम स्कोअर',
+    ta: '1. ஆவணங்கள் பதிவேற்றம் & அபாய மதிப்பெண்',
+    te: '1. పత్రాలను అప్‌లోడ్ చేయండి & రిస్క్ స్కోర్',
+    bn: '১. নথি আপলোড এবং ঝুঁকি স্কোর',
+    gu: '1. દસ્તાવેજો અપલોડ કરો અને જોખમ સ્કોર',
+    kn: '1. ದಾಖಲೆಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ & ಅಪಾಯದ ಅಂಕ',
+  },
+  btnRespondNotices: {
+    en: '2. Respond to Improvement Notices (30-Day Grace)',
+    hi: '2. सुधार नोटिस का उत्तर दें (30 दिन की छूट)',
+    mr: '२. सुधारणा सूचनांना उत्तर द्या (३० दिवसांची मुदत)',
+    ta: '2. மேம்பாட்டு அறிவிப்புகளுக்கு பதிலளிக்கவும் (30 நாட்கள் அவகாசம்)',
+    te: '2. మెరుగుదల నోటీసులకు స్పందించండి (30 రోజుల గడువు)',
+    bn: '২. উন্নতি নোটিশের উত্তর দিন (৩০ দিনের সুযোগ)',
+    gu: '2. સુધારણા નોટિસનો પ્રતિસાદ આપો (30-દિવસની મુદત)',
+    kn: '2. ಸುಧಾರಣಾ ನೋಟಿಸ್‌ಗಳಿಗೆ ಪ್ರತಿಕ್ರಿಯಿಸಿ (30 ದಿನಗಳ ಕಾಲಾವಕಾಶ)',
+  },
+  cardUploadDocsTitle: {
+    en: 'Upload Documents',
+    hi: 'दस्तावेज अपलोड करें',
+    mr: 'दस्तऐवज अपलोड करा',
+    ta: 'ஆவணங்களை பதிவேற்றவும்',
+    te: 'పత్రాలను అప్‌లోడ్ చేయండి',
+    bn: 'নথি আপলোড করুন',
+    gu: 'દસ્તાવેજો અપલોડ કરો',
+    kn: 'ದಾಖಲೆಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
+  },
+  cardUploadDocsSubtitle: {
+    en: 'Submit your salary sheets, attendance logs, and contractor lists',
+    hi: 'अपनी वेतन शीट, उपस्थिति लॉग और ठेकेदार सूचियां जमा करें',
+    mr: 'तुमचे वेतन पत्रक, हजेरी नोंदी आणि कंत्राटदार याद्या सबमिट करा',
+    ta: 'உங்கள் சம்பளப் பட்டியல்கள், வருகைப் பதிவுகள் மற்றும் ஒப்பந்ததாரர் பட்டியல்களைச் சமர்ப்பிக்கவும்',
+    te: 'మీ జీతాల షీట్లు, హాజరు లాగ్‌లు మరియు కాంట్రాక్టర్ జాబితాలను సమర్పించండి',
+    bn: 'আপনার বেতন শিট, উপস্থিতি লগ এবং ঠিকাদার তালিকা জমা দিন',
+    gu: 'તમારી પગાર શીટ્સ, હાજરી લોગ અને કોન્ટ્રાક્ટર યાદીઓ સબમિટ કરો',
+    kn: 'ನಿಮ್ಮ ಸಂಬಳದ ಹಾಳೆಗಳು, ಹಾಜರಾತಿ ಲಾಗ್‌ಗಳು ಮತ್ತು ಗುತ್ತಿಗೆದಾರರ ಪಟ್ಟಿಗಳನ್ನು ಸಲ್ಲಿಸಿ',
+  },
+  lblCompanyName: {
+    en: 'Company Name',
+    hi: 'कंपनी का नाम',
+    mr: 'कंपनीचे नाव',
+    ta: 'நிறுவனத்தின் பெயர்',
+    te: 'కంపెనీ పేరు',
+    bn: 'কোম্পানির নাম',
+    gu: 'કંપનીનું નામ',
+    kn: 'ಕಂಪನಿಯ ಹೆಸರು',
+  },
+  lblCompanyLIN: {
+    en: 'Company LIN',
+    hi: 'कंपनी एलआईएन (LIN)',
+    mr: 'कंपनी LIN',
+    ta: 'நிறுவன எல்ஐஎன் (LIN)',
+    te: 'కంపెనీ LIN',
+    bn: 'কোম্পানি LIN',
+    gu: 'કંપની LIN',
+    kn: 'ಕಂಪನಿ LIN',
+  },
+  lblState: {
+    en: 'State',
+    hi: 'राज्य',
+    mr: 'राज्य',
+    ta: 'மாநிலம்',
+    te: 'రాష్ట్రం',
+    bn: 'রাজ্য',
+    gu: 'રાજ્ય',
+    kn: 'ರಾಜ್ಯ',
+  },
+  lblUploadSalary: {
+    en: 'Upload Salary Sheet',
+    hi: 'वेतन शीट अपलोड करें',
+    mr: 'वेतन पत्रक अपलोड करा',
+    ta: 'சம்பளப் பட்டியலை பதிவேற்றவும்',
+    te: 'జీతాల షీట్‌ను అప్‌లోడ్ చేయండి',
+    bn: 'বেতন শিট আপলোড করুন',
+    gu: 'પગાર શીટ અપલોડ કરો',
+    kn: 'ಸಂಬಳದ ಹಾಳೆಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
+  },
+  lblUploadAttendance: {
+    en: 'Upload Attendance Log',
+    hi: 'उपस्थिति लॉग अपलोड करें',
+    mr: 'हजेरी नोंद अपलोड करा',
+    ta: 'வருகைப் பதிவை பதிவேற்றவும்',
+    te: 'హాజరు లాగ్‌ను అప్‌లోడ్ చేయండి',
+    bn: 'উপস্থিতি লগ আপলোড করুন',
+    gu: 'હાજરી લોગ અપલોડ કરો',
+    kn: 'ಹಾಜರಾತಿ ಲಾಗ್‌ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
+  },
+  lblUploadContractor: {
+    en: 'Upload Contractor List',
+    hi: 'ठेकेदार सूची अपलोड करें',
+    mr: 'कंत्राटदार यादी अपलोड करा',
+    ta: 'ஒப்பந்ததாரர் பட்டியலை பதிவேற்றவும்',
+    te: 'కాంట్రాక్టర్ జాబితాను అప్‌లోడ్ చేయండి',
+    bn: 'ঠিকাদার তালিকা আপলোড করুন',
+    gu: 'કોન્ટ્રાક્ટર યાદી અપલોડ કરો',
+    kn: 'ಗುತ್ತಿಗೆದಾರರ ಪಟ್ಟಿಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ',
+  },
+  btnSubmitDocuments: {
+    en: 'Submit Documents',
+    hi: 'दस्तावेज जमा करें',
+    mr: 'दस्तऐवज सबमिट करा',
+    ta: 'ஆவணங்களைச் சமர்ப்பிக்கவும்',
+    te: 'పత్రాలను సమర్పించండి',
+    bn: 'নথি জমা দিন',
+    gu: 'દસ્તાવેજો સબમિટ કરો',
+    kn: 'ದಾಖಲೆಗಳನ್ನು ಸಲ್ಲಿಸಿ',
+  },
+  cardRiskTitle: {
+    en: 'Risk Assessment & Reasons',
+    hi: 'जोखिम मूल्यांकन एवं कारण',
+    mr: 'जोखीम मूल्यमापन आणि कारणे',
+    ta: 'அபாய மதிப்பீடு & காரணங்கள்',
+    te: 'రిస్క్ అసెస్‌మెంట్ & కారణాలు',
+    bn: 'ঝুঁকি মূল্যায়ন এবং কারণ',
+    gu: 'જોખમ આકારણી અને કારણો',
+    kn: 'ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ & ಕಾರಣಗಳು',
+  },
+  btnLoadInstantAssessment: {
+    en: '⚡ Load Instant Compliance Assessment',
+    hi: '⚡ तुरंत अनुपालन मूल्यांकन लोड करें',
+    mr: '⚡ त्वरित अनुपालन मूल्यमापन लोड करा',
+    ta: '⚡ உடனடி இணக்க மதிப்பீட்டை ஏற்றவும்',
+    te: '⚡ తక్షణ సమ్మతి అసెస్‌మెంట్‌ను లోడ్ చేయండి',
+    bn: '⚡ তাত্ক্ষণিক সম্মতি মূল্যায়ন লোড করুন',
+    gu: '⚡ ત્વરિત પાલન આકારણી લોડ કરો',
+    kn: '⚡ ತಕ್ಷಣದ ಅನುಸರಣೆ ಮೌಲ್ಯಮಾಪನವನ್ನು ಲೋಡ್ ಮಾಡಿ',
+  },
+
+  // Common UI Actions
+  chooseFile: {
+    en: 'Choose File',
+    hi: 'फ़ाइल चुनें',
+    mr: 'फाइल निवडा',
+    ta: 'கோப்பைத் தேர்ந்தெடுக்கவும்',
+    te: 'ఫైల్‌ను ఎంచుకోండి',
+    bn: 'ফাইল নির্বাচন করুন',
+    gu: 'ફાઇલ પસંદ કરો',
+    kn: 'ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ',
+  },
+  statusSuccess: {
+    en: 'Success',
+    hi: 'सफल',
+    mr: 'यशस्वी',
+    ta: 'வெற்றி',
+    te: 'విజయం',
+    bn: 'সফল',
+    gu: 'સફળ',
+    kn: 'ಯಶಸ್ವಿ',
+  },
+  statusPending: {
+    en: 'Pending',
+    hi: 'लंबित',
+    mr: 'प्रलंबित',
+    ta: 'நிலுவையில் உள்ளது',
+    te: 'పెండింగ్‌లో ఉంది',
+    bn: 'মুলতুবি',
+    gu: 'પેન્ડિંગ',
+    kn: 'ಬಾಕಿ ಇದೆ',
+  },
 };
+
+// Common word & phrase dictionary for seamless real-time UI translation
+const COMMON_PHRASES: Record<string, Record<Language, string>> = {
+  'Company Dashboard & Compliance Hub': translations.companyHubTitle,
+  'View your real-time risk score with reasons, upload compliance documents, and respond to 30-day improvement notices.': translations.companyHubSubtitle,
+  '1. Upload Documents & Risk Score': translations.btnUploadDocs,
+  '2. Respond to Improvement Notices (30-Day Grace)': translations.btnRespondNotices,
+  'Upload Documents': translations.cardUploadDocsTitle,
+  'Submit your salary sheets, attendance logs, and contractor lists': translations.cardUploadDocsSubtitle,
+  'Company Name': translations.lblCompanyName,
+  'Company LIN': translations.lblCompanyLIN,
+  'State': translations.lblState,
+  'Upload Salary Sheet': translations.lblUploadSalary,
+  'Upload Attendance Log': translations.lblUploadAttendance,
+  'Upload Contractor List': translations.lblUploadContractor,
+  'Submit Documents': translations.btnSubmitDocuments,
+  'Risk Assessment & Reasons': translations.cardRiskTitle,
+  'Load Instant Compliance Assessment': {
+    en: 'Load Instant Compliance Assessment',
+    hi: 'तुरंत अनुपालन मूल्यांकन लोड करें',
+    mr: 'त्वरित अनुपालन मूल्यमापन लोड करा',
+    ta: 'உடனடி இணக்க மதிப்பீட்டை ஏற்றவும்',
+    te: 'తక్షణ సమ్మతి అసెస్‌మెంట్‌ను లోడ్ చేయండి',
+    bn: 'তাত্ক্ষণিক সম্মতি মূল্যায়ন লোড করুন',
+    gu: 'ત્વરિત પાલન આકારણી લોડ કરો',
+    kn: 'ತಕ್ಷಣದ ಅನುಸರಣೆ ಮೌಲ್ಯಮಾಪನವನ್ನು ಲೋಡ್ ಮಾಡಿ',
+  },
+  'Submit your documents or click below to simulate instant analysis': {
+    en: 'Submit your documents or click below to simulate instant analysis',
+    hi: 'अपने दस्तावेज जमा करें या तुरंत विश्लेषण के लिए नीचे क्लिक करें',
+    mr: 'तुमचे दस्तऐवज सबमिट करा किंवा झटपट विश्लेषणासाठी खाली क्लिक करा',
+    ta: 'உங்கள் ஆவணங்களைச் சமர்ப்பிக்கவும் அல்லது உடனடி பகுப்பாய்வை உருவகப்படுத்த கீழே கிளிக் செய்யவும்',
+    te: 'మీ పత్రాలను సమర్పించండి లేదా తక్షణ విశ్లేషణను అనుకరించడానికి క్రింద క్లిక్ చేయండి',
+    bn: 'আপনার নথি জমা দিন বা তাত্ক্ষণিক বিশ্লেষণ অনুকরণ করতে নীচে ক্লিক করুন',
+    gu: 'તમારા દસ્તાવેજો સબમિટ કરો અથવા ત્વરિત વિશ્લેષણ માટે નીચે ક્લિક કરો',
+    kn: 'ನಿಮ್ಮ ದಾಖಲೆಗಳನ್ನು ಸಲ್ಲಿಸಿ ಅಥವಾ ತಕ್ಷಣದ ವಿಶ್ಲೇಷಣೆಯನ್ನು ಅನುಕರಿಸಲು ಕೆಳಗೆ ಕ್ಲಿಕ್ ಮಾಡಿ',
+  },
+  'Choose File': translations.chooseFile,
+};
+
+export function translateText(text: string, targetLang: Language): string {
+  if (!text || targetLang === 'en') return text;
+  
+  const trimmed = text.trim();
+  if (COMMON_PHRASES[trimmed] && COMMON_PHRASES[trimmed][targetLang]) {
+    return COMMON_PHRASES[trimmed][targetLang];
+  }
+
+  // Exact dictionary match
+  for (const key in translations) {
+    if (translations[key].en.toLowerCase() === trimmed.toLowerCase()) {
+      return translations[key][targetLang] || text;
+    }
+  }
+
+  return text;
+}

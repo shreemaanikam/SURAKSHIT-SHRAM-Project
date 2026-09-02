@@ -57,7 +57,14 @@ interface PredictiveAlert {
   recommendedAction: string;
 }
 
-export const GovernmentSection: React.FC = () => {
+import { Language, translateText } from '../../services/languageService';
+
+export interface GovernmentSectionProps {
+  currentLanguage?: Language;
+}
+
+export const GovernmentSection: React.FC<GovernmentSectionProps> = ({ currentLanguage = 'en' }) => {
+  const tText = (text: string) => translateText(text, currentLanguage);
   const [activeTab, setActiveTab] = useState<'monitoring' | 'predictive'>('monitoring');
   const [selectedState, setSelectedState] = useState('Maharashtra');
 
