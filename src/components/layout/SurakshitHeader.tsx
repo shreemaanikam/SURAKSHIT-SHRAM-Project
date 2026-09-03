@@ -6,20 +6,12 @@ import {
   Store, 
   MessageSquareWarning,
   Sparkles,
-  Eye,
-  Scale,
-  Users,
-  Shield,
-  Zap,
-  Globe,
-  Check,
   ChevronDown,
   Smartphone,
-  UserCheck,
-  Lock,
-  ArrowRight,
+  Globe,
+  Check,
   ShieldCheck,
-  LogOut
+  ArrowRight
 } from 'lucide-react';
 import { GovLogo } from '../common/GovLogo';
 import { Language, translations } from '../../services/languageService';
@@ -122,8 +114,8 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
   const activeUser = ROLE_USERS[currentUserRole];
 
   return (
-    <header className="bg-gradient-to-r from-amber-50/60 via-white to-emerald-50/60 border-b border-slate-200 sticky top-0 z-40 shadow-xs">
-      {/* 1. Indian Tricolor Accent Line with Ashoka Blue Center */}
+    <header className="bg-gradient-to-r from-amber-50/70 via-white to-emerald-50/70 border-b border-slate-200 shadow-xs relative">
+      {/* 1. Indian Tricolor Accent Line */}
       <div className="h-1.5 w-full flex shadow-xs">
         <div className="h-full w-1/3 bg-[#FF9933] relative">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-[#FF9933]" />
@@ -138,66 +130,60 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
         </div>
       </div>
 
-      {/* 2. Top Header with Government Logo, Branding & Auth Selector */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+      {/* 2. Top Header Branding Container - Fully Responsive across split screen & mobile */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
         {/* Left: Official Government of India Logo */}
-        <div className="flex items-center">
-          <GovLogo size={42} showText={true} />
+        <div className="flex items-center shrink-0">
+          <GovLogo size={36} showText={true} />
         </div>
 
-        {/* Center: Surakshit Shram Brand & Motto in Indian Flag Colours */}
-        <div className="text-center flex-1 max-w-xl">
-          {/* Smart Labour Compliance Pill in Tricolor styling */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-0.5 rounded-full bg-gradient-to-r from-amber-50 via-white to-emerald-50 border border-amber-300/80 text-blue-950 text-[10px] font-extrabold uppercase tracking-wider mb-1 shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-[#FF9933] animate-pulse" />
+        {/* Center: Surakshit Shram Brand */}
+        <div className="text-center flex-1 min-w-[200px] max-w-md mx-auto">
+          {/* Smart Labour Compliance Pill */}
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-50 via-white to-emerald-50 border border-amber-300/80 text-blue-950 text-[9px] font-extrabold uppercase tracking-wider mb-0.5 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF9933] animate-pulse" />
             <span className="bg-gradient-to-r from-orange-700 via-blue-950 to-emerald-800 bg-clip-text text-transparent font-black tracking-wide">
               SMART LABOUR COMPLIANCE PORTAL
             </span>
-            <span className="w-2 h-2 rounded-full bg-[#138808] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#138808] animate-pulse" />
           </div>
 
           {/* Main Title: Saffron Surakshit + Ashoka Navy Shram */}
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight font-serif flex items-center justify-center gap-1.5 leading-none py-0.5">
-            <span className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent drop-shadow-2xs">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight font-serif flex items-center justify-center gap-1 leading-none py-0.5">
+            <span className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
               {currentLanguage === 'en' ? 'Surakshit' : t('portalTitle').split(' ')[0]}
             </span>
-            <span className="text-[#0A192F] drop-shadow-2xs">
+            <span className="text-[#0A192F]">
               {currentLanguage === 'en' ? 'Shram' : t('portalTitle').split(' ').slice(1).join(' ') || ''}
             </span>
-            <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-sans font-bold uppercase tracking-wider ml-1">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-sans font-bold uppercase tracking-wider ml-1">
               GOI
             </span>
           </h1>
 
-          {/* Subtitle & Motto with Tricolor Flag Philosophy */}
-          <p className="text-xs text-slate-700 font-medium flex items-center justify-center flex-wrap gap-1.5 pt-0.5">
+          {/* Subtitle & Motto */}
+          <p className="text-[11px] text-slate-700 font-medium flex items-center justify-center flex-wrap gap-1 pt-0.5">
             <span className="italic font-serif text-slate-600 font-semibold">&ldquo;{t('motto')}&rdquo;</span>
-            <span className="text-slate-300">•</span>
-            <span className="inline-flex items-center gap-1 font-bold text-[11px] sm:text-xs">
-              <span className="text-[#E65100] hover:underline cursor-default" title="Saffron: Courage & Fairness">
-                Fair
-              </span>
+            <span className="hidden md:inline text-slate-300">•</span>
+            <span className="hidden md:inline-flex items-center gap-1 font-bold text-[11px]">
+              <span className="text-[#E65100]">Fair</span>
               <span className="text-blue-900 font-extrabold">•</span>
-              <span className="text-blue-900 hover:underline cursor-default" title="Ashoka Blue: Truth & Transparency">
-                Transparent
-              </span>
+              <span className="text-blue-900">Transparent</span>
               <span className="text-emerald-700 font-extrabold">•</span>
-              <span className="text-[#138808] hover:underline cursor-default" title="India Green: Growth & Inclusiveness">
-                Inclusive
-              </span>
+              <span className="text-[#138808]">Inclusive</span>
             </span>
           </p>
         </div>
 
-        {/* Right: Role Switcher / Login & AI Bhashini Language */}
-        <div className="flex items-center gap-2.5">
-          {/* Active User Role Chip / Login Trigger */}
+        {/* Right: Role Switcher & AI Bhashini Language */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Active User Role Chip */}
           <button
             onClick={() => setIsRoleModalOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-amber-50/50 border border-amber-300/80 rounded-xl text-left transition-all shadow-2xs group hover:border-orange-400"
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-amber-50/50 border border-amber-300/80 rounded-xl text-left transition-all shadow-2xs group hover:border-orange-400"
             title="Switch User Role / Authentication"
           >
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-orange-500 via-blue-900 to-emerald-600 text-white flex items-center justify-center font-black text-[10px] shadow-2xs">
+            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-orange-500 via-blue-900 to-emerald-600 text-white flex items-center justify-center font-black text-[9px] shadow-2xs">
               {currentUserRole === 'company'
                 ? 'CO'
                 : currentUserRole === 'inspector'
@@ -209,21 +195,21 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
                 : 'ADM'}
             </div>
             <div className="flex flex-col">
-              <span className="text-[9px] text-orange-700 font-black uppercase tracking-wider leading-none">
+              <span className="text-[8px] text-orange-700 font-black uppercase tracking-wider leading-none">
                 LOGGED IN AS
               </span>
-              <span className="text-xs font-bold text-slate-900 leading-tight group-hover:text-blue-900">
+              <span className="text-[11px] font-bold text-slate-900 leading-tight group-hover:text-blue-900">
                 {activeUser.name.split(' ')[0]} ({currentUserRole.toUpperCase()})
               </span>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-orange-600 ml-0.5 group-hover:translate-y-0.5 transition-transform" />
+            <ChevronDown className="w-3 h-3 text-orange-600 ml-0.5 group-hover:translate-y-0.5 transition-transform" />
           </button>
 
-          {/* AI Bhashini Translate Dropdown Selector with Indian Flag theme */}
+          {/* AI Bhashini Translate Dropdown */}
           <div className="relative">
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-emerald-50/50 border border-emerald-300/80 rounded-xl text-xs font-bold text-slate-800 shadow-2xs transition-all hover:border-emerald-500 group"
+              className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-emerald-50/50 border border-emerald-300/80 rounded-xl text-xs font-bold text-slate-800 shadow-2xs transition-all hover:border-emerald-500 group"
               title="Bhashini AI Real-time Neural Translation"
             >
               <Globe className="w-3.5 h-3.5 text-blue-800 group-hover:rotate-12 transition-transform" />
@@ -274,10 +260,10 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
         </div>
       </div>
 
-      {/* 3. Official 6-Tab Section Navigation Bar in Sovereign Navy with Saffron Active Tabs & Tricolor Accents */}
-      <nav className="bg-[#0A192F] text-white border-t-2 border-[#FF9933] border-b-2 border-[#138808] shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-1.5 sm:gap-2 py-1.5">
+      {/* 3. Sleek Sticky Navigation Bar — Sticks cleanly at top-0 when scrolling without covering page content */}
+      <nav className="bg-[#0A192F] text-white border-t-2 border-[#FF9933] border-b-2 border-[#138808] shadow-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between overflow-x-auto scrollbar-none py-1">
+          <div className="flex items-center gap-1 sm:gap-2 py-0.5">
             {navTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeSection === tab.id;
@@ -285,7 +271,7 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => onSelectSection(tab.id)}
-                  className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-lg text-xs font-extrabold transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs font-extrabold transition-all whitespace-nowrap ${
                     isActive
                       ? 'bg-gradient-to-r from-[#FF9933] via-orange-500 to-[#E65100] text-white shadow-md ring-1 ring-orange-300/50'
                       : 'text-slate-200 hover:text-white hover:bg-white/10'
@@ -298,18 +284,18 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
             })}
           </div>
 
-          <div className="hidden lg:flex items-center gap-2.5 text-[11px] text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+          <div className="hidden lg:flex items-center gap-2 text-[10px] text-slate-300 bg-white/5 px-2.5 py-1 rounded-full border border-white/10 shrink-0">
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-[#FF9933]" />
-              <span className="w-2 h-2 rounded-full bg-white" />
-              <span className="w-2 h-2 rounded-full bg-[#138808] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF9933]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#138808] animate-pulse" />
             </span>
             <span className="font-semibold text-white">National Labour Gateway • Live</span>
           </div>
         </div>
       </nav>
 
-      {/* 4. Role Authentication & Access Level Modal */}
+      {/* 4. Role Authentication Modal */}
       {isRoleModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fadeIn">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden animate-scaleIn">

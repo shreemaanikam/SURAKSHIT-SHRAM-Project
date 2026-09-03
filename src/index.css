@@ -29,6 +29,15 @@
   background: #94a3b8;
 }
 
+/* Utility to hide scrollbar for clean tab navigation */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Print optimizations for official PDF inspection reports */
 @media print {
   body {
