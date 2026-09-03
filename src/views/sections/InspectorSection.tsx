@@ -123,10 +123,10 @@ export const InspectorSection: React.FC<InspectorSectionProps> = ({ currentLangu
           <span>LEO FIELD INSPECTION MOBILE SUITE</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Inspector Mobile App
+          {tText('Inspector Mobile App')}
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto">
-          Conduct on-site physical audits, review past violation records, capture geotagged photo evidence, and submit statutory reports within 48 hours.
+          {tText('Conduct on-site physical audits, review past violation records, capture geotagged photo evidence, and submit statutory reports within 48 hours.')}
         </p>
       </div>
 

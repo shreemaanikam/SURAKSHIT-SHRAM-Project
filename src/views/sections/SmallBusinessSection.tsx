@@ -78,10 +78,10 @@ export const SmallBusinessSection: React.FC<SmallBusinessSectionProps> = ({ curr
       {/* Section Header */}
       <div className="text-center space-y-1">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          For Small Businesses
+          {tText('For Small Businesses')}
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-          Submit documents offline through Common Service Centers
+          {tText('Submit documents offline through Common Service Centers')}
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export const SmallBusinessSection: React.FC<SmallBusinessSectionProps> = ({ curr
           <div className="border-b border-slate-100 pb-3">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
               <Store className="w-5 h-5 text-blue-600" />
-              <span>Submit via Common Service Center</span>
+              <span>{tText('Submit via Common Service Center')}</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Visit any CSC to submit your documents — no computer needed

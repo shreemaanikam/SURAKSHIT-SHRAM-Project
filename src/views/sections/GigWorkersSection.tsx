@@ -90,10 +90,10 @@ export const GigWorkersSection: React.FC<GigWorkersSectionProps> = ({ currentLan
       {/* Section Header */}
       <div className="text-center space-y-1">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          For Gig Workers
+          {tText('For Gig Workers')}
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-          Track gig workers across platforms and ensure social security coverage
+          {tText('Track gig workers across platforms and ensure social security coverage')}
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export const GigWorkersSection: React.FC<GigWorkersSectionProps> = ({ currentLan
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
                 <BarChart2 className="w-4 h-4 text-blue-600" />
-                Active Gig Workers by Platform
+                {tText('Active Gig Workers by Platform')}
               </h4>
               <p className="text-[11px] text-slate-500">Live platform aggregator sync</p>
             </div>
@@ -137,7 +137,7 @@ export const GigWorkersSection: React.FC<GigWorkersSectionProps> = ({ currentLan
           <div className="border-b border-slate-100 pb-2.5">
             <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
               <PieChartIcon className="w-4 h-4 text-purple-600" />
-              Social Security Fund Scheme Allocation
+              {tText('Social Security Fund Scheme Allocation')}
             </h4>
             <p className="text-[11px] text-slate-500">Code on Social Security (Section 114 fund pool)</p>
           </div>

@@ -190,10 +190,10 @@ export const GovernmentSection: React.FC<GovernmentSectionProps> = ({ currentLan
       {/* Section Header */}
       <div className="text-center space-y-1">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Government & Ministry Live Dashboard
+          {tText('Government & Ministry Live Dashboard')}
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-          Central Labour Commissioner command center — sector-wise compliance, state-wise reports, high-risk establishments, and predictive alerts for labor unrest.
+          {tText('Central Labour Commissioner command center — sector-wise compliance, state-wise reports, high-risk establishments, and predictive alerts for labor unrest.')}
         </p>
 
         {/* Sub-Tabs: Monitoring / Predictive Alerts */}
@@ -208,7 +208,7 @@ export const GovernmentSection: React.FC<GovernmentSectionProps> = ({ currentLan
               }`}
             >
               <Landmark className="w-3.5 h-3.5" />
-              <span>1. State & Sector Compliance Radar</span>
+              <span>{tText('1. State & Sector Compliance Radar')}</span>
             </button>
             <button
               onClick={() => setActiveTab('predictive')}
