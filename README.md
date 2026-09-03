@@ -6,9 +6,9 @@
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://ai.studio/apps/5f9ecafc-194a-4d1e-8640-4865de19fa07
-
-## Run Locally
+View your app in web browser: https://surakshit-shram-project-kohl.vercel.app/
+Run Locally at :
+https://ai.studio/apps/5f9ecafc-194a-4d1e-8640-4865de19fa07
 
 **Prerequisites:**  Node.js
 
