@@ -124,7 +124,7 @@ export const ComplaintsSection: React.FC<ComplaintsSectionProps> = ({ currentLan
               <span>{tText('File a Complaint')}</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Report delayed wages, unsafe conditions, or any violation
+              {tText('Report delayed wages, unsafe conditions, or any violation')}
             </p>
           </div>
 
@@ -254,7 +254,7 @@ export const ComplaintsSection: React.FC<ComplaintsSectionProps> = ({ currentLan
               <span>{tText('Recent Complaints')}</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Verified complaints automatically update company risk scores
+              {tText('Verified complaints automatically update company risk scores')}
             </p>
           </div>
 

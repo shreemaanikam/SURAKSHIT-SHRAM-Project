@@ -220,8 +220,8 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
 
             {isLangOpen && (
               <>
-                <div className="fixed inset-0 z-20" onClick={() => setIsLangOpen(false)} />
-                <div className="absolute right-0 mt-1.5 w-52 bg-white border border-slate-200 rounded-xl shadow-xl z-30 py-1.5 animate-fadeIn">
+                <div className="fixed inset-0 z-50" onClick={() => setIsLangOpen(false)} />
+                <div className="absolute right-0 mt-1.5 w-52 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 py-1.5 animate-fadeIn">
                   <div className="px-3 py-1.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-50 to-emerald-50">
                     <span className="text-[10px] font-extrabold text-blue-950 uppercase tracking-wider flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -261,7 +261,7 @@ export const SurakshitHeader: React.FC<SurakshitHeaderProps> = ({
       </div>
 
       {/* 3. Sleek Sticky Navigation Bar — Sticks cleanly at top-0 when scrolling without covering page content */}
-      <nav className="bg-[#0A192F] text-white border-t-2 border-[#FF9933] border-b-2 border-[#138808] shadow-md sticky top-0 z-40">
+      <nav className="bg-[#0A192F] text-white border-t-2 border-[#FF9933] border-b-2 border-[#138808] shadow-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-between overflow-x-auto scrollbar-none py-1">
           <div className="flex items-center gap-1 sm:gap-2 py-0.5">
             {navTabs.map((tab) => {
